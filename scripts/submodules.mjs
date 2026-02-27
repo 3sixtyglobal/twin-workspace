@@ -46,6 +46,11 @@ async function run() {
 		process.stdout.write(`Submodule: ${submodule}\n`);
 		if (command === "install") {
 			await runShellCmd('npm', ['install'], submodule);
+		} else if (command === "lint") {
+			await fs.rm(`${submodule}/.eslintcache`, {
+				force: true
+			});
+			await runShellCmd('npm', ['run', 'lint'], submodule);
 		} else if (command === "dist") {
 			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
 		} else if (command === "dist-no-test") {
