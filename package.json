@@ -14,6 +14,7 @@
 	},
 	"scripts": {
 		"submodule:install": "node ./scripts/submodules.mjs install",
+		"submodule:lint": "node ./scripts/submodules.mjs lint",
 		"submodule:dist": "node ./scripts/submodules.mjs dist",
 		"submodule:dist-no-test": "node ./scripts/submodules.mjs dist-no-test",
 		"keywords": "node ./scripts/keywords.mjs"
