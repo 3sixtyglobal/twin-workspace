@@ -78,4 +78,6 @@ npm run submodule:dist engine
 
 ## Development
 
-To work on specific repos it is recommended to open that repo separately in VS Code and use the package script etc within that repo.
+To work on specific repos it is recommended to open that repo separately in VS Code and use the package scripts etc within that repo.
+
+> The workspace repository does not directly consume source code from sibling repositories during development. Instead, it resolves dependencies via published npm packages. To propagate local modifications from one repository into another without waiting for a package release, developers must invoke the `npm run local-link` script within the target repository. This script establishes a symlink to the locally built package, ensuring that inter-repo changes are immediately available for testing and integration.
