@@ -61,24 +61,17 @@ jobs:
         submodule: ${{ fromJson(needs.read-submodules.outputs.submodules) }}
 
     steps:
-      # Checkout only the workspace repository metadata first.
-      - name: Checkout workspace repository
+      # Checkout the selected repository directly from GitHub.
+      - name: Checkout selected repository
         uses: actions/checkout@v4
         with:
-          # Required for private submodules; this token must have read access
-          # to twinfoundation/workspace and all private submodule repositories.
+          # Required for private repositories in the twinfoundation org.
           token: ${{ secrets.GHA_RELEASE_TOKEN }}
+          repository: twinfoundation/${{ matrix.submodule }}
+          ref: next
+          path: ${{ matrix.submodule }}
           submodules: false
           fetch-depth: 1
-
-      # Initialise only the selected submodule for this matrix job.
-      - name: Checkout selected submodule
-        env:
-          GH_SUBMODULES_TOKEN: ${{ secrets.GHA_RELEASE_TOKEN }}
-        run: |
-          git config --global url."https://x-access-token:${GH_SUBMODULES_TOKEN}@github.com/".insteadOf "https://github.com/"
-          git submodule sync -- ${{ matrix.submodule }}
-          git submodule update --init --recursive --depth 1 -- ${{ matrix.submodule }}
 
       # Use the Node.js version aligned with workspace requirements.
       - name: Setup Node
@@ -87,7 +80,6 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: |
-            package-lock.json
             ${{ matrix.submodule }}/package-lock.json
             ${{ matrix.submodule }}/packages/*/package-lock.json
             ${{ matrix.submodule }}/apps/*/package-lock.json
