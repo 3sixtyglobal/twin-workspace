@@ -20,21 +20,54 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-submodules:
-    # Linux runner for the cross-submodule install and build commands.
+  read-submodules:
+    # Read the submodule list from package.json once and expose it as a matrix.
     runs-on: ubuntu-latest
-    # Prevent stalled builds from running indefinitely.
-    timeout-minutes: 180
+    outputs:
+      submodules: ${{ steps.get-submodules.outputs.submodules }}
 
     steps:
-      # Checkout the workspace repo and initialize all nested submodules.
-      - name: Checkout repository and submodules
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GHA_RELEASE_TOKEN }}
+          submodules: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Read submodules from package.json
+        id: get-submodules
+        run: echo "submodules=$(node -e \"import fs from 'node:fs'; const p = JSON.parse(fs.readFileSync('package.json', 'utf8')); process.stdout.write(JSON.stringify(p.submodules ?? []));\")" >> $GITHUB_OUTPUT
+
+  build-submodules:
+    # Build each submodule independently with per-submodule cache keys.
+    needs: read-submodules
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        submodule: ${{ fromJson(needs.read-submodules.outputs.submodules) }}
+
+    steps:
+      # Checkout only the workspace repository metadata first.
+      - name: Checkout workspace repository
         uses: actions/checkout@v4
         with:
           # Required for private submodules; this token must have read access
           # to twinfoundation/workspace and all private submodule repositories.
           token: ${{ secrets.GHA_RELEASE_TOKEN }}
-          submodules: recursive
+          submodules: false
+          fetch-depth: 1
+
+      # Initialise only the selected submodule for this matrix job.
+      - name: Checkout selected submodule
+        run: |
+          git submodule sync -- ${{ matrix.submodule }}
+          git submodule update --init --recursive --depth 1 -- ${{ matrix.submodule }}
 
       # Use the Node.js version aligned with workspace requirements.
       - name: Setup Node
@@ -44,33 +77,30 @@ jobs:
           cache: npm
           cache-dependency-path: |
             package-lock.json
-            */package-lock.json
-            */packages/*/package-lock.json
-            */apps/*/package-lock.json
+            ${{ matrix.submodule }}/package-lock.json
+            ${{ matrix.submodule }}/packages/*/package-lock.json
+            ${{ matrix.submodule }}/apps/*/package-lock.json
 
-      # Cache submodule node_modules folders to speed up repeated runs.
-      # The cache key is based on all known lockfiles across the workspace/submodules.
-      - name: Cache submodule node_modules
+      # Cache node_modules for the current submodule only.
+      - name: Cache node_modules for submodule
         id: submodule-node-modules-cache
         uses: actions/cache@v4
         with:
           path: |
-            */node_modules
-            */packages/*/node_modules
-            */apps/*/node_modules
-          key: submodule-node-modules-${{ hashFiles('package-lock.json', '*/package-lock.json', '*/packages/*/package-lock.json', '*/apps/*/package-lock.json') }}
+            ${{ matrix.submodule }}/node_modules
+            ${{ matrix.submodule }}/packages/*/node_modules
+            ${{ matrix.submodule }}/apps/*/node_modules
+          key: ${{ matrix.submodule }}-${{ hashFiles(format('{0}/package-lock.json', matrix.submodule), format('{0}/packages/*/package-lock.json', matrix.submodule), format('{0}/apps/*/package-lock.json', matrix.submodule)) }}
           restore-keys: |
-            submodule-node-modules-
+            ${{ matrix.submodule }}-
 
-      # Install root workspace dependencies used by orchestration scripts.
-      - name: Install workspace dependencies
-        run: npm ci
-
-      # Install dependencies in all configured submodules in build order.
+      # Install dependencies for the current submodule if cache miss.
       - name: Install submodule dependencies
         if: steps.submodule-node-modules-cache.outputs.cache-hit != 'true'
-        run: npm run submodule:install
+        run: npm install
+        working-directory: ${{ matrix.submodule }}
 
-      # Build all submodules while skipping tests.
-    #   - name: Build submodules (no test)
-    #     run: npm run submodule:dist-no-test
+      # Build current submodule while skipping tests as we don't have the docker test environments.
+      - name: Build submodule (no test)
+        run: npm run dist:no-test
+        working-directory: ${{ matrix.submodule }}
