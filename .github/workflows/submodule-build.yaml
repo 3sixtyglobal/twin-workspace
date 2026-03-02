@@ -40,7 +40,15 @@ jobs:
 
       - name: Read submodules from package.json
         id: get-submodules
-        run: echo "submodules=$(node -e \"import fs from 'node:fs'; const p = JSON.parse(fs.readFileSync('package.json', 'utf8')); process.stdout.write(JSON.stringify(p.submodules ?? []));\")" >> $GITHUB_OUTPUT
+        run: |
+          submodules_json=$(node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          process.stdout.write(JSON.stringify(packageJson.submodules ?? []));
+          NODE
+          )
+          echo "submodules=$submodules_json" >> "$GITHUB_OUTPUT"
 
   build-submodules:
     # Build each submodule independently with per-submodule cache keys.
