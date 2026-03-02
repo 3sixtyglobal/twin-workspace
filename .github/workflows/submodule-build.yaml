@@ -112,6 +112,6 @@ jobs:
         working-directory: ${{ matrix.submodule }}
 
       # Build current submodule while skipping tests as we don't have the docker test environments.
-    #   - name: Build submodule (no test)
-    #     run: npm run dist:no-test
-    #     working-directory: ${{ matrix.submodule }}
+      - name: Build submodule (no test)
+        run: npm run dist:no-test
+        working-directory: ${{ matrix.submodule }}
