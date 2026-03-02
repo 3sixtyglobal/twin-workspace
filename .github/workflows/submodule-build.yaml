@@ -111,6 +111,21 @@ jobs:
         run: npm install
         working-directory: ${{ matrix.submodule }}
 
+      # Some workspace CLI bins can lose executable permissions when restored from cache.
+      # Ensure binaries are executable before running dist scripts.
+      - name: Fix executable permissions
+        run: |
+          if [ -d node_modules/.bin ]; then
+            chmod +x node_modules/.bin/* || true
+          fi
+          if [ -d apps ]; then
+            find apps -type f -path "*/bin/*.js" -exec chmod +x {} + || true
+          fi
+          if [ -d packages ]; then
+            find packages -type f -path "*/bin/*.js" -exec chmod +x {} + || true
+          fi
+        working-directory: ${{ matrix.submodule }}
+
       # Build current submodule while skipping tests as we don't have the docker test environments.
       - name: Build submodule (no test)
         run: npm run dist:no-test
