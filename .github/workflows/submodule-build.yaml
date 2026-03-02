@@ -65,7 +65,6 @@ jobs:
       - name: Checkout selected repository
         uses: actions/checkout@v4
         with:
-          # Required for private repositories in the twinfoundation org.
           token: ${{ secrets.GHA_RELEASE_TOKEN }}
           repository: twinfoundation/${{ matrix.submodule }}
           ref: next
@@ -78,44 +77,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: |
-            ${{ matrix.submodule }}/package-lock.json
-            ${{ matrix.submodule }}/packages/*/package-lock.json
-            ${{ matrix.submodule }}/apps/*/package-lock.json
 
-      # Cache node_modules for the current submodule only.
-      - name: Cache node_modules for submodule
-        id: submodule-node-modules-cache
-        uses: actions/cache@v4
-        with:
-          path: |
-            ${{ matrix.submodule }}/node_modules
-            ${{ matrix.submodule }}/packages/*/node_modules
-            ${{ matrix.submodule }}/apps/*/node_modules
-          key: ${{ matrix.submodule }}-${{ hashFiles(format('{0}/package-lock.json', matrix.submodule), format('{0}/packages/*/package-lock.json', matrix.submodule), format('{0}/apps/*/package-lock.json', matrix.submodule)) }}
-          restore-keys: |
-            ${{ matrix.submodule }}-
-
-      # Install dependencies for the current submodule if cache miss.
-      - name: Install submodule dependencies
-        if: steps.submodule-node-modules-cache.outputs.cache-hit != 'true'
-        run: npm install
+      # Remove lock files so dependency install resolves latest versions.
+      - name: Remove package-lock files
+        run: find . -type f -name "package-lock.json" -delete
         working-directory: ${{ matrix.submodule }}
 
-      # Some workspace CLI bins can lose executable permissions when restored from cache.
-      # Ensure binaries are executable before running dist scripts.
-      - name: Fix executable permissions
-        run: |
-          if [ -d node_modules/.bin ]; then
-            chmod +x node_modules/.bin/* || true
-          fi
-          if [ -d apps ]; then
-            find apps -type f -path "*/bin/*.js" -exec chmod +x {} + || true
-          fi
-          if [ -d packages ]; then
-            find packages -type f -path "*/bin/*.js" -exec chmod +x {} + || true
-          fi
+      # Install dependencies for the current submodule.
+      - name: Install submodule dependencies
+        run: npm install
         working-directory: ${{ matrix.submodule }}
 
       # Build current submodule while skipping tests as we don't have the docker test environments.
