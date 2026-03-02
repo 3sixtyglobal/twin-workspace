@@ -31,6 +31,9 @@ jobs:
       - name: Checkout repository and submodules
         uses: actions/checkout@v4
         with:
+          # Required for private submodules; this token must have read access
+          # to twinfoundation/workspace and all private submodule repositories.
+          token: ${{ secrets.GHA_RELEASE_TOKEN }}
           submodules: recursive
 
       # Use the Node.js version aligned with workspace requirements.
