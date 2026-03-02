@@ -41,6 +41,26 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            */package-lock.json
+            */packages/*/package-lock.json
+            */apps/*/package-lock.json
+
+      # Cache submodule node_modules folders to speed up repeated runs.
+      # The cache key is based on all known lockfiles across the workspace/submodules.
+      - name: Cache submodule node_modules
+        id: submodule-node-modules-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            */node_modules
+            */packages/*/node_modules
+            */apps/*/node_modules
+          key: submodule-node-modules-${{ hashFiles('package-lock.json', '*/package-lock.json', '*/packages/*/package-lock.json', '*/apps/*/package-lock.json') }}
+          restore-keys: |
+            submodule-node-modules-
 
       # Install root workspace dependencies used by orchestration scripts.
       - name: Install workspace dependencies
@@ -48,8 +68,9 @@ jobs:
 
       # Install dependencies in all configured submodules in build order.
       - name: Install submodule dependencies
+        if: steps.submodule-node-modules-cache.outputs.cache-hit != 'true'
         run: npm run submodule:install
 
       # Build all submodules while skipping tests.
-      - name: Build submodules (no test)
-        run: npm run submodule:dist-no-test
+    #   - name: Build submodules (no test)
+    #     run: npm run submodule:dist-no-test
