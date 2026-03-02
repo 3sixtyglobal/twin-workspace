@@ -1,0 +1,52 @@
+name: Workspace Submodule Build
+
+# Run automatically for changes on next and allow manual execution.
+on:
+  workflow_dispatch:
+  # Allow external repositories (submodules) to trigger this workflow.
+  repository_dispatch:
+    types:
+      - submodule-changed
+  pull_request:
+    branches:
+      - next
+  push:
+    branches:
+      - next
+
+# Cancel older in-progress runs for the same branch/PR.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-submodules:
+    # Linux runner for the cross-submodule install and build commands.
+    runs-on: ubuntu-latest
+    # Prevent stalled builds from running indefinitely.
+    timeout-minutes: 180
+
+    steps:
+      # Checkout the workspace repo and initialize all nested submodules.
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Use the Node.js version aligned with workspace requirements.
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Install root workspace dependencies used by orchestration scripts.
+      - name: Install workspace dependencies
+        run: npm ci
+
+      # Install dependencies in all configured submodules in build order.
+      - name: Install submodule dependencies
+        run: npm run submodule:install
+
+      # Build all submodules while skipping tests.
+      - name: Build submodules (no test)
+        run: npm run submodule:dist-no-test
