@@ -130,13 +130,12 @@
 	path = synchronised-storage
 	url = https://github.com/twinfoundation/synchronised-storage.git
 	branch = next
-[submodule "data-space-connector"]
-	path = data-space-connector
-	url = https://github.com/twinfoundation/data-space-connector.git
-	branch = next
 [submodule "rfcs"]
 	path = rfcs
 	url = https://github.com/twinfoundation/rfcs.git
 [submodule "trust"]
 	path = trust
 	url = https://github.com/twinfoundation/trust.git
+[submodule "dataspace"]
+	path = dataspace
+	url = https://github.com/twinfoundation/dataspace.git
