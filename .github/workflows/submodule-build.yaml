@@ -73,7 +73,10 @@ jobs:
 
       # Initialise only the selected submodule for this matrix job.
       - name: Checkout selected submodule
+        env:
+          GH_SUBMODULES_TOKEN: ${{ secrets.GHA_RELEASE_TOKEN }}
         run: |
+          git config --global url."https://x-access-token:${GH_SUBMODULES_TOKEN}@github.com/".insteadOf "https://github.com/"
           git submodule sync -- ${{ matrix.submodule }}
           git submodule update --init --recursive --depth 1 -- ${{ matrix.submodule }}
 
