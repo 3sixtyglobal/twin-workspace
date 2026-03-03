@@ -3,6 +3,15 @@ name: Workspace Submodule Build
 # Run automatically for changes on next and allow manual execution.
 on:
   workflow_dispatch:
+    inputs:
+      runTesting:
+        description: Run submodule builds with testing enabled
+        required: true
+        type: choice
+        default: '⚡ no-test'
+        options:
+          - '⚡ no-test'
+          - '🧪 test'
   # Allow external repositories (submodules) to trigger this workflow.
   repository_dispatch:
     types:
@@ -22,7 +31,7 @@ concurrency:
 jobs:
   read-submodules:
     # Read the submodule list from package.json once and expose it as a matrix.
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
     outputs:
       submodules: ${{ steps.get-submodules.outputs.submodules }}
 
@@ -36,7 +45,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Read submodules from package.json
         id: get-submodules
@@ -53,10 +62,10 @@ jobs:
   build-submodules:
     # Build each submodule independently with per-submodule cache keys.
     needs: read-submodules
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
     timeout-minutes: 180
     strategy:
-      fail-fast: false
+      fail-fast: true
       matrix:
         submodule: ${{ fromJson(needs.read-submodules.outputs.submodules) }}
 
@@ -76,7 +85,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
 
       # Remove lock files so dependency install resolves latest versions.
       - name: Remove package-lock files
@@ -88,7 +97,50 @@ jobs:
         run: npm install
         working-directory: ${{ matrix.submodule }}
 
-      # Build current submodule while skipping tests as we don't have the docker test environments.
-      - name: Build submodule (no test)
-        run: npm run dist:no-test
+      # Resolve testing mode to a simple boolean flag for later steps.
+      - name: Resolve testing mode
+        id: testing-mode
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.runTesting }}" = "🧪 test" ]; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      # Prepare setup-test-env composite action for this submodule.
+      - name: Prepare setup-test-env action
+        if: ${{ steps.testing-mode.outputs.enabled == 'true' }}
+        run: |
+          rm -rf ./.tmp/setup-test-env
+          mkdir -p ./.tmp
+          cp -R "${{ matrix.submodule }}/.github/workflows/setup-test-env" ./.tmp/setup-test-env
+
+      # Setup test environment using the submodule composite action.
+      - name: Setup test environment
+        if: ${{ steps.testing-mode.outputs.enabled == 'true' }}
+        uses: ./.tmp/setup-test-env
+        with:
+          package: ${{ matrix.submodule }}
+
+      # Build current submodule (with or without tests based on workflow input).
+      - name: Build submodule
+        run: |
+          if [ "${{ steps.testing-mode.outputs.enabled }}" = "true" ]; then
+            npm run dist
+          else
+            npm run dist:no-test
+          fi
         working-directory: ${{ matrix.submodule }}
+
+      # Prepare teardown-test-env composite action for this submodule.
+      - name: Prepare teardown-test-env action
+        if: ${{ always() && steps.testing-mode.outputs.enabled == 'true' }}
+        run: |
+          rm -rf ./.tmp/teardown-test-env
+          mkdir -p ./.tmp
+          cp -R "${{ matrix.submodule }}/.github/workflows/teardown-test-env" ./.tmp/teardown-test-env
+
+      # Teardown test environment using the submodule composite action.
+      - name: Teardown test environment
+        if: ${{ always() && steps.testing-mode.outputs.enabled == 'true' }}
+        uses: ./.tmp/teardown-test-env
