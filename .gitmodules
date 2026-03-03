@@ -136,6 +136,8 @@
 [submodule "trust"]
 	path = trust
 	url = https://github.com/twinfoundation/trust.git
+	branch = next
 [submodule "dataspace"]
 	path = dataspace
 	url = https://github.com/twinfoundation/dataspace.git
+	branch = next
