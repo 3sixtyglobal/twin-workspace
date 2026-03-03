@@ -1,0 +1,10 @@
+[
+	"eslint",
+	"@eslint/js",
+	"tailwindcss",
+	"storybook",
+	"@storybook/*",
+	"vite",
+	"eslint-plugin-storybook",
+	"flowbite-svelte*"
+]

@@ -14,9 +14,17 @@
 	},
 	"scripts": {
 		"submodule:install": "node ./scripts/submodules.mjs install",
+		"submodule:install:single": "node ./scripts/submodules.mjs install --single",
+		"submodule:format": "node ./scripts/submodules.mjs format",
+		"submodule:format:single": "node ./scripts/submodules.mjs format --single",
 		"submodule:lint": "node ./scripts/submodules.mjs lint",
+		"submodule:lint:single": "node ./scripts/submodules.mjs lint --single",
 		"submodule:dist": "node ./scripts/submodules.mjs dist",
+		"submodule:dist:single": "node ./scripts/submodules.mjs dist --single",
 		"submodule:dist-no-test": "node ./scripts/submodules.mjs dist-no-test",
+		"submodule:dist-no-test:single": "node ./scripts/submodules.mjs dist-no-test --single",
+		"submodule:refresh-deps-build": "node ./scripts/submodules.mjs refresh-deps-build",
+		"submodule:refresh-deps-build:single": "node ./scripts/submodules.mjs refresh-deps-build --single",
 		"keywords": "node ./scripts/keywords.mjs"
 	},
 	"submodules": [
