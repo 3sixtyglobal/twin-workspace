@@ -16,6 +16,7 @@ By default, commands run across all submodules. You can also:
 | [Lint](#lint) | `npm run submodule:lint` | `npm run submodule:lint engine` | `npm run submodule:lint:single engine` |
 | [Dist](#dist) | `npm run submodule:dist` | `npm run submodule:dist engine` | `npm run submodule:dist:single engine` |
 | [Dist (no test)](#dist) | `npm run submodule:dist-no-test` | `npm run submodule:dist-no-test engine` | `npm run submodule:dist-no-test:single engine` |
+| [Docs](#docs) | `npm run submodule:docs` | `npm run submodule:docs engine` | `npm run submodule:docs:single engine` |
 | [Refresh dependencies and build](#refresh-dependencies-and-build) | `npm run submodule:refresh-deps-build` | `npm run submodule:refresh-deps-build engine` | `npm run submodule:refresh-deps-build:single engine` |
 
 ### Operational notes
@@ -139,6 +140,26 @@ To run dist-no-test against a single submodule use:
 
 ```shell
 npm run submodule:dist-no-test:single engine
+```
+
+### Docs
+
+You can run the following command to generate docs across all the submodules:
+
+```shell
+npm run submodule:docs
+```
+
+To start docs generation from a specific submodule use:
+
+```shell
+npm run submodule:docs engine
+```
+
+To run docs generation against a single submodule use:
+
+```shell
+npm run submodule:docs:single engine
 ```
 
 ### Refresh dependencies and build

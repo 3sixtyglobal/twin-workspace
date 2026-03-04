@@ -23,6 +23,8 @@
 		"submodule:dist:single": "node ./scripts/submodules.mjs dist --single",
 		"submodule:dist-no-test": "node ./scripts/submodules.mjs dist-no-test",
 		"submodule:dist-no-test:single": "node ./scripts/submodules.mjs dist-no-test --single",
+		"submodule:docs": "node ./scripts/submodules.mjs docs",
+		"submodule:docs:single": "node ./scripts/submodules.mjs docs --single",
 		"submodule:refresh-deps-build": "node ./scripts/submodules.mjs refresh-deps-build",
 		"submodule:refresh-deps-build:single": "node ./scripts/submodules.mjs refresh-deps-build --single",
 		"keywords": "node ./scripts/keywords.mjs"

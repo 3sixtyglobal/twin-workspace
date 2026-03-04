@@ -64,6 +64,8 @@ async function run() {
 			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
 		} else if (command === 'dist-no-test') {
 			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist:no-test'], submodule);
+		} else if (command === 'docs') {
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'docs'], submodule);
 		} else if (command === 'refresh-deps-build') {
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
