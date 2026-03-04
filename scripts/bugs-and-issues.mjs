@@ -3,14 +3,6 @@
 import fs from 'fs';
 import { glob } from 'glob';
 
-// Function to get root folder from file path
-function getRootFolder(filePath) {
-	// Remove leading ./ and get the first directory
-	const normalized = filePath.replace(/^\.\//, '').replace(/\\/g, '/');
-	const parts = normalized.split('/');
-	return parts[0];
-}
-
 // Find all package.json files - exclude node_modules
 const files = await glob(`./**/package.json`, {
 	ignore: ['**/node_modules/**', '**/dist/**', '**/docs/**', '**/tests/**']
