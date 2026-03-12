@@ -37,13 +37,13 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GHA_RELEASE_TOKEN }}
           submodules: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
 
@@ -73,7 +73,7 @@ jobs:
     steps:
       # Checkout the selected repository directly from GitHub.
       - name: Checkout selected repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.GHA_RELEASE_TOKEN }}
           repository: twinfoundation/${{ matrix.submodule }}
@@ -84,7 +84,7 @@ jobs:
 
       # Use the Node.js version aligned with workspace requirements.
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
 
