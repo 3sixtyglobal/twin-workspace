@@ -60,6 +60,9 @@ async function run() {
 		} else if (command === 'lint') {
 			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
 			await runShellCmd('npm', ['run', 'lint'], submodule);
+		} else if (command === 'lint:code') {
+			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
+			await runShellCmd('npm', ['run', 'lint:code'], submodule);
 		} else if (command === 'dist') {
 			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
 		} else if (command === 'dist-no-test') {
@@ -67,6 +70,11 @@ async function run() {
 		} else if (command === 'docs') {
 			await runShellApp('node', ['./scripts/workspaces.mjs', 'docs'], submodule);
 		} else if (command === 'refresh-deps-build') {
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
+			await runShellCmd('npm', ['install'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist:no-test'], submodule);
+		} else if (command === 'update-deps-build') {
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
 			await runShellCmd('npx', ['--yes', 'npm-check-updates', '--deep', '-u', ...ncuExclusionArgs], submodule);

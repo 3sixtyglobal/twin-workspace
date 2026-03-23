@@ -1,4 +1,7 @@
 {
 	"git.detectSubmodulesLimit": 1000,
-	"vitest.disableWorkspaceWarning": true
+	"vitest.disableWorkspaceWarning": true,
+	"files.associations": {
+		"*.mdx": "markdown"
+	}
 }
