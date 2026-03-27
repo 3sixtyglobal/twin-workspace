@@ -6,5 +6,9 @@
 	"@storybook/*",
 	"vite",
 	"eslint-plugin-storybook",
-	"flowbite-svelte*"
+	"flowbite-svelte*",
+	 "@vitejs/plugin-react",
+	 "@sveltejs/vite-plugin-svelte",
+	 "lucide-react",
+	 "typescript"
 ]
