@@ -16,6 +16,7 @@
 		"submodule:install": "node ./scripts/submodules.mjs install",
 		"submodule:format": "node ./scripts/submodules.mjs format",
 		"submodule:lint": "node ./scripts/submodules.mjs lint",
+		"submodule:lint:code": "node ./scripts/submodules.mjs lint:code",
 		"submodule:dist": "node ./scripts/submodules.mjs dist",
 		"submodule:dist-no-test": "node ./scripts/submodules.mjs dist-no-test",
 		"submodule:test": "node ./scripts/submodules.mjs test",
