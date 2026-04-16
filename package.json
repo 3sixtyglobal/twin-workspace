@@ -47,6 +47,7 @@
 		"wallet",
 		"identity",
 		"nft",
+		"notarization",
 		"verifiable-storage",
 		"immutable-proof",
 		"attestation",

@@ -6,9 +6,6 @@
 	],
 	"settings": {
 		"git.detectSubmodules": false,
-		"git.detectSubmodulesLimit": 9999,
-		"githubPullRequests.ignoredPullRequestBranches": [
-			"next"
-		]
+		"git.detectSubmodulesLimit": 9999
 	}
 }

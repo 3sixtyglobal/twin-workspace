@@ -141,3 +141,6 @@
 	path = dataspace
 	url = https://github.com/twinfoundation/dataspace.git
 	branch = next
+[submodule "notarization"]
+	path = notarization
+	url = https://github.com/twinfoundation/notarization.git
