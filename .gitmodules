@@ -144,3 +144,6 @@
 [submodule "notarization"]
 	path = notarization
 	url = https://github.com/twinfoundation/notarization.git
+[submodule "scripts/hierarchies"]
+	path = scripts/hierarchies
+	url = https://github.com/twinfoundation/hierarchies.git
