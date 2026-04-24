@@ -38,6 +38,7 @@
 		"vault",
 		"blob-storage",
 		"telemetry",
+		"automation",
 		"background-task",
 		"data-processing",
 		"messaging",

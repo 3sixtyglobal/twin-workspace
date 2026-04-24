@@ -69,4 +69,4 @@ async function addLabelToRepo(repoName) {
 }
 
 // addLabelToAllRepos();
-// addLabelToRepo("notarization");
+addLabelToRepo("automation");

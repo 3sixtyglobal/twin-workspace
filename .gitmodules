@@ -147,3 +147,6 @@
 [submodule "scripts/hierarchies"]
 	path = scripts/hierarchies
 	url = https://github.com/twinfoundation/hierarchies.git
+[submodule "automation"]
+	path = automation
+	url = https://github.com/twinfoundation/automation.git
