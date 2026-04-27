@@ -118,10 +118,6 @@
 	path = twin-federated-catalogue
 	url = https://github.com/twinfoundation/twin-federated-catalogue.git
 	branch = next
-[submodule "twin-docs"]
-	path = twin-docs
-	url = https://github.com/twinfoundation/twin-docs.git
-	branch = next
 [submodule "twin-playground"]
 	path = twin-playground
 	url = https://github.com/twinfoundation/twin-playground.git
