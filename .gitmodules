@@ -102,10 +102,6 @@
 	path = twin-document-management
 	url = https://github.com/twinfoundation/twin-document-management.git
 	branch = next
-[submodule "twin-schema"]
-	path = twin-schema
-	url = https://github.com/twinfoundation/twin-schema.git
-	branch = next
 [submodule "twin-node"]
 	path = twin-node
 	url = https://github.com/twinfoundation/twin-node.git
