@@ -39,7 +39,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GHA_RELEASE_TOKEN }}
+          token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
           submodules: false
 
       - name: Setup Node
@@ -75,7 +75,7 @@ jobs:
       - name: Checkout selected repository
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GHA_RELEASE_TOKEN }}
+          token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
           repository: twinfoundation/${{ matrix.submodule }}
           ref: next
           path: ${{ matrix.submodule }}
