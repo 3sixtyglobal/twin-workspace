@@ -17,7 +17,7 @@ For day-to-day implementation work, open the specific submodule repository in VS
 1. Clone the workspace with submodules:
 
 ```shell
-git clone --recursive https://github.com/twinfoundation/workspace.git
+git clone --recursive https://github.com/iotaledger/twin-workspace.git
 ```
 
 1. Keep submodules current when switching context:
