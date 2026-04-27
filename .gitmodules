@@ -1,152 +1,163 @@
-[submodule "api"]
-	path = api
-	url = https://github.com/twinfoundation/api.git
+[submodule "twin-api"]
+	path = twin-api
+	url = https://github.com/twinfoundation/twin-api.git
 	branch = next
-[submodule "attestation"]
-	path = attestation
-	url = https://github.com/twinfoundation/attestation.git
+[submodule "twin-attestation"]
+	path = twin-attestation
+	url = https://github.com/twinfoundation/twin-attestation.git
 	branch = next
-[submodule "auditable-item-graph"]
-	path = auditable-item-graph
-	url = https://github.com/twinfoundation/auditable-item-graph.git
+[submodule "twin-auditable-item-graph"]
+	path = twin-auditable-item-graph
+	url = https://github.com/twinfoundation/twin-auditable-item-graph.git
 	branch = next
-[submodule "blob-storage"]
-	path = blob-storage
-	url = https://github.com/twinfoundation/blob-storage.git
+[submodule "twin-blob-storage"]
+	path = twin-blob-storage
+	url = https://github.com/twinfoundation/twin-blob-storage.git
 	branch = next
-[submodule "data"]
-	path = data
-	url = https://github.com/twinfoundation/data.git
+[submodule "twin-data"]
+	path = twin-data
+	url = https://github.com/twinfoundation/twin-data.git
 	branch = next
-[submodule "dlt"]
-	path = dlt
-	url = https://github.com/twinfoundation/dlt.git
+[submodule "twin-dlt"]
+	path = twin-dlt
+	url = https://github.com/twinfoundation/twin-dlt.git
 	branch = next
-[submodule "entity-storage"]
-	path = entity-storage
-	url = https://github.com/twinfoundation/entity-storage.git
+[submodule "twin-entity-storage"]
+	path = twin-entity-storage
+	url = https://github.com/twinfoundation/twin-entity-storage.git
 	branch = next
-[submodule "framework"]
-	path = framework
-	url = https://github.com/twinfoundation/framework.git
+[submodule "twin-framework"]
+	path = twin-framework
+	url = https://github.com/twinfoundation/twin-framework.git
 	branch = next
-[submodule "identity"]
-	path = identity
-	url = https://github.com/twinfoundation/identity.git
+[submodule "twin-identity"]
+	path = twin-identity
+	url = https://github.com/twinfoundation/twin-identity.git
 	branch = next
-[submodule "verifiable-storage"]
-	path = verifiable-storage
-	url = https://github.com/twinfoundation/verifiable-storage.git
+[submodule "twin-verifiable-storage"]
+	path = twin-verifiable-storage
+	url = https://github.com/twinfoundation/twin-verifiable-storage.git
 	branch = next
-[submodule "logging"]
-	path = logging
-	url = https://github.com/twinfoundation/logging.git
+[submodule "twin-logging"]
+	path = twin-logging
+	url = https://github.com/twinfoundation/twin-logging.git
 	branch = next
-[submodule "nft"]
-	path = nft
-	url = https://github.com/twinfoundation/nft.git
+[submodule "twin-nft"]
+	path = twin-nft
+	url = https://github.com/twinfoundation/twin-nft.git
 	branch = next
-[submodule "standards"]
-	path = standards
-	url = https://github.com/twinfoundation/standards.git
+[submodule "twin-standards"]
+	path = twin-standards
+	url = https://github.com/twinfoundation/twin-standards.git
 	branch = next
-[submodule "telemetry"]
-	path = telemetry
-	url = https://github.com/twinfoundation/telemetry.git
+[submodule "twin-telemetry"]
+	path = twin-telemetry
+	url = https://github.com/twinfoundation/twin-telemetry.git
 	branch = next
-[submodule "tools"]
-	path = tools
-	url = https://github.com/twinfoundation/tools.git
+[submodule "twin-tools"]
+	path = twin-tools
+	url = https://github.com/twinfoundation/twin-tools.git
 	branch = next
-[submodule "vault"]
-	path = vault
-	url = https://github.com/twinfoundation/vault.git
+[submodule "twin-vault"]
+	path = twin-vault
+	url = https://github.com/twinfoundation/twin-vault.git
 	branch = next
-[submodule "wallet"]
-	path = wallet
-	url = https://github.com/twinfoundation/wallet.git
+[submodule "twin-wallet"]
+	path = twin-wallet
+	url = https://github.com/twinfoundation/twin-wallet.git
 	branch = next
-[submodule "auditable-item-stream"]
-	path = auditable-item-stream
-	url = https://github.com/twinfoundation/auditable-item-stream.git
+[submodule "twin-auditable-item-stream"]
+	path = twin-auditable-item-stream
+	url = https://github.com/twinfoundation/twin-auditable-item-stream.git
 	branch = next
-[submodule "ui"]
-	path = ui
-	url = https://github.com/twinfoundation/ui.git
+[submodule "twin-ui"]
+	path = twin-ui
+	url = https://github.com/twinfoundation/twin-ui.git
 	branch = next
-[submodule "immutable-proof"]
-	path = immutable-proof
-	url = https://github.com/twinfoundation/immutable-proof.git
+[submodule "twin-immutable-proof"]
+	path = twin-immutable-proof
+	url = https://github.com/twinfoundation/twin-immutable-proof.git
 	branch = next
-[submodule "background-task"]
-	path = background-task
-	url = https://github.com/twinfoundation/background-task.git
+[submodule "twin-background-task"]
+	path = twin-background-task
+	url = https://github.com/twinfoundation/twin-background-task.git
 	branch = next
-[submodule "engine"]
-	path = engine
-	url = https://github.com/twinfoundation/engine.git
+[submodule "twin-engine"]
+	path = twin-engine
+	url = https://github.com/twinfoundation/twin-engine.git
 	branch = next
-[submodule "event-bus"]
-	path = event-bus
-	url = https://github.com/twinfoundation/event-bus.git
+[submodule "twin-event-bus"]
+	path = twin-event-bus
+	url = https://github.com/twinfoundation/twin-event-bus.git
 	branch = next
-[submodule "messaging"]
-	path = messaging
-	url = https://github.com/twinfoundation/messaging.git
+[submodule "twin-messaging"]
+	path = twin-messaging
+	url = https://github.com/twinfoundation/twin-messaging.git
 	branch = next
-[submodule "data-processing"]
-	path = data-processing
-	url = https://github.com/twinfoundation/data-processing.git
+[submodule "twin-data-processing"]
+	path = twin-data-processing
+	url = https://github.com/twinfoundation/twin-data-processing.git
 	branch = next
-[submodule "document-management"]
-	path = document-management
-	url = https://github.com/twinfoundation/document-management.git
+[submodule "twin-document-management"]
+	path = twin-document-management
+	url = https://github.com/twinfoundation/twin-document-management.git
 	branch = next
-[submodule "schema"]
-	path = schema
-	url = https://github.com/twinfoundation/schema.git
+[submodule "twin-schema"]
+	path = twin-schema
+	url = https://github.com/twinfoundation/twin-schema.git
 	branch = next
-[submodule "node"]
-	path = node
-	url = https://github.com/twinfoundation/node.git
+[submodule "twin-node"]
+	path = twin-node
+	url = https://github.com/twinfoundation/twin-node.git
 	branch = next
-[submodule "rights-management"]
-	path = rights-management
-	url = https://github.com/twinfoundation/rights-management.git
+[submodule "twin-rights-management"]
+	path = twin-rights-management
+	url = https://github.com/twinfoundation/twin-rights-management.git
 	branch = next
-[submodule "federated-catalogue"]
-	path = federated-catalogue
-	url = https://github.com/twinfoundation/federated-catalogue.git
+[submodule "twin-federated-catalogue"]
+	path = twin-federated-catalogue
+	url = https://github.com/twinfoundation/twin-federated-catalogue.git
 	branch = next
-[submodule "docs"]
-	path = docs
-	url = https://github.com/twinfoundation/docs.git
+[submodule "twin-docs"]
+	path = twin-docs
+	url = https://github.com/twinfoundation/twin-docs.git
 	branch = next
-[submodule "playground"]
-	path = playground
-	url = https://github.com/twinfoundation/playground.git
+[submodule "twin-playground"]
+	path = twin-playground
+	url = https://github.com/twinfoundation/twin-playground.git
 	branch = next
-[submodule "synchronised-storage"]
-	path = synchronised-storage
-	url = https://github.com/twinfoundation/synchronised-storage.git
+[submodule "twin-synchronised-storage"]
+	path = twin-synchronised-storage
+	url = https://github.com/twinfoundation/twin-synchronised-storage.git
 	branch = next
-[submodule "rfcs"]
-	path = rfcs
-	url = https://github.com/twinfoundation/rfcs.git
-[submodule "trust"]
-	path = trust
-	url = https://github.com/twinfoundation/trust.git
+[submodule "twin-rfcs"]
+	path = twin-rfcs
+	url = https://github.com/twinfoundation/twin-rfcs.git
+[submodule "twin-trust"]
+	path = twin-trust
+	url = https://github.com/twinfoundation/twin-trust.git
 	branch = next
-[submodule "dataspace"]
-	path = dataspace
-	url = https://github.com/twinfoundation/dataspace.git
+[submodule "twin-dataspace"]
+	path = twin-dataspace
+	url = https://github.com/twinfoundation/twin-dataspace.git
 	branch = next
-[submodule "notarization"]
-	path = notarization
-	url = https://github.com/twinfoundation/notarization.git
-[submodule "hierarchies"]
-	path = hierarchies
-	url = https://github.com/twinfoundation/hierarchies.git
-[submodule "automation"]
-	path = automation
-	url = https://github.com/twinfoundation/automation.git
+[submodule "twin-notarization"]
+	path = twin-notarization
+	url = https://github.com/twinfoundation/twin-notarization.git
+	branch = next
+[submodule "twin-hierarchies"]
+	path = twin-hierarchies
+	url = https://github.com/twinfoundation/twin-hierarchies.git
+	branch = next
+[submodule "twin-automation"]
+	path = twin-automation
+	url = https://github.com/twinfoundation/twin-automation.git
+	branch = next
+[submodule "twin-identity-management"]
+	path = twin-identity-management
+	url = https://github.com/twinfoundation/twin-identity-management.git
+	branch = next
+[submodule "twin-supply-chain"]
+	path = twin-supply-chain
+	url = https://github.com/twinfoundation/twin-supply-chain.git
+	branch = next
