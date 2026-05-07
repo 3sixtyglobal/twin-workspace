@@ -4,7 +4,7 @@
 	"description": "Workspace",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/twinfoundation/workspace.git"
+		"url": "git+https://github.com/iotaledger/workspace.git"
 	},
 	"author": "martyn.janes@iota.org",
 	"license": "Apache-2.0",
@@ -72,7 +72,7 @@
 		"glob": "^11.0.3"
 	},
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/workspace/issues"
+		"url": "git+https://github.com/iotaledger/workspace/issues"
 	},
 	"homepage": "https://twindev.org"
 }

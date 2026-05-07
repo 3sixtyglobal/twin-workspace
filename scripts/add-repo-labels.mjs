@@ -1,10 +1,10 @@
 import { Octokit } from "@octokit/rest";
 
 const octokit = new Octokit({
-	auth: "github_pat_......"
+	auth: "github_pat_..."
 });
 
-const ORG = "twinfoundation";
+const ORG = "iotaledger";
 const LABELS = [
 	{
 		name: "autorelease: pending",
@@ -25,6 +25,11 @@ const LABELS = [
 		name: "information-needed",
 		color: "7ecd6e",
 		description: "More information is needed from the issue reporter",
+	},
+	{
+		name: "blocked",
+		color: "b03b06",
+		description: "This issue is blocked by another issue",
 	}
 ];
 
@@ -38,7 +43,7 @@ async function addLabelToAllRepos() {
 
 		// To avoid hitting rate limits
 		await new Promise(resolve => setTimeout(resolve, 1000));
-		for (const repo of repos) {
+		for (const repo of repos.filter((r) => r.name.startsWith("twin-"))) {
 			await addLabelToRepo(repo.name);
 		}
 	} catch (err) {
@@ -68,5 +73,5 @@ async function addLabelToRepo(repoName) {
 	}
 }
 
-// addLabelToAllRepos();
-addLabelToRepo("automation");
+addLabelToAllRepos();
+// addLabelToRepo("automation");
