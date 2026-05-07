@@ -1,155 +1,155 @@
 [submodule "twin-api"]
 	path = twin-api
-	url = https://github.com/twinfoundation/twin-api.git
+	url = https://github.com/iotaledger/twin-api.git
 	branch = next
 [submodule "twin-attestation"]
 	path = twin-attestation
-	url = https://github.com/twinfoundation/twin-attestation.git
+	url = https://github.com/iotaledger/twin-attestation.git
 	branch = next
 [submodule "twin-auditable-item-graph"]
 	path = twin-auditable-item-graph
-	url = https://github.com/twinfoundation/twin-auditable-item-graph.git
+	url = https://github.com/iotaledger/twin-auditable-item-graph.git
 	branch = next
 [submodule "twin-blob-storage"]
 	path = twin-blob-storage
-	url = https://github.com/twinfoundation/twin-blob-storage.git
+	url = https://github.com/iotaledger/twin-blob-storage.git
 	branch = next
 [submodule "twin-data"]
 	path = twin-data
-	url = https://github.com/twinfoundation/twin-data.git
+	url = https://github.com/iotaledger/twin-data.git
 	branch = next
 [submodule "twin-dlt"]
 	path = twin-dlt
-	url = https://github.com/twinfoundation/twin-dlt.git
+	url = https://github.com/iotaledger/twin-dlt.git
 	branch = next
 [submodule "twin-entity-storage"]
 	path = twin-entity-storage
-	url = https://github.com/twinfoundation/twin-entity-storage.git
+	url = https://github.com/iotaledger/twin-entity-storage.git
 	branch = next
 [submodule "twin-framework"]
 	path = twin-framework
-	url = https://github.com/twinfoundation/twin-framework.git
+	url = https://github.com/iotaledger/twin-framework.git
 	branch = next
 [submodule "twin-identity"]
 	path = twin-identity
-	url = https://github.com/twinfoundation/twin-identity.git
+	url = https://github.com/iotaledger/twin-identity.git
 	branch = next
 [submodule "twin-verifiable-storage"]
 	path = twin-verifiable-storage
-	url = https://github.com/twinfoundation/twin-verifiable-storage.git
+	url = https://github.com/iotaledger/twin-verifiable-storage.git
 	branch = next
 [submodule "twin-logging"]
 	path = twin-logging
-	url = https://github.com/twinfoundation/twin-logging.git
+	url = https://github.com/iotaledger/twin-logging.git
 	branch = next
 [submodule "twin-nft"]
 	path = twin-nft
-	url = https://github.com/twinfoundation/twin-nft.git
+	url = https://github.com/iotaledger/twin-nft.git
 	branch = next
 [submodule "twin-standards"]
 	path = twin-standards
-	url = https://github.com/twinfoundation/twin-standards.git
+	url = https://github.com/iotaledger/twin-standards.git
 	branch = next
 [submodule "twin-telemetry"]
 	path = twin-telemetry
-	url = https://github.com/twinfoundation/twin-telemetry.git
+	url = https://github.com/iotaledger/twin-telemetry.git
 	branch = next
 [submodule "twin-tools"]
 	path = twin-tools
-	url = https://github.com/twinfoundation/twin-tools.git
+	url = https://github.com/iotaledger/twin-tools.git
 	branch = next
 [submodule "twin-vault"]
 	path = twin-vault
-	url = https://github.com/twinfoundation/twin-vault.git
+	url = https://github.com/iotaledger/twin-vault.git
 	branch = next
 [submodule "twin-wallet"]
 	path = twin-wallet
-	url = https://github.com/twinfoundation/twin-wallet.git
+	url = https://github.com/iotaledger/twin-wallet.git
 	branch = next
 [submodule "twin-auditable-item-stream"]
 	path = twin-auditable-item-stream
-	url = https://github.com/twinfoundation/twin-auditable-item-stream.git
+	url = https://github.com/iotaledger/twin-auditable-item-stream.git
 	branch = next
 [submodule "twin-ui"]
 	path = twin-ui
-	url = https://github.com/twinfoundation/twin-ui.git
+	url = https://github.com/iotaledger/twin-ui.git
 	branch = next
 [submodule "twin-immutable-proof"]
 	path = twin-immutable-proof
-	url = https://github.com/twinfoundation/twin-immutable-proof.git
+	url = https://github.com/iotaledger/twin-immutable-proof.git
 	branch = next
 [submodule "twin-background-task"]
 	path = twin-background-task
-	url = https://github.com/twinfoundation/twin-background-task.git
+	url = https://github.com/iotaledger/twin-background-task.git
 	branch = next
 [submodule "twin-engine"]
 	path = twin-engine
-	url = https://github.com/twinfoundation/twin-engine.git
+	url = https://github.com/iotaledger/twin-engine.git
 	branch = next
 [submodule "twin-event-bus"]
 	path = twin-event-bus
-	url = https://github.com/twinfoundation/twin-event-bus.git
+	url = https://github.com/iotaledger/twin-event-bus.git
 	branch = next
 [submodule "twin-messaging"]
 	path = twin-messaging
-	url = https://github.com/twinfoundation/twin-messaging.git
+	url = https://github.com/iotaledger/twin-messaging.git
 	branch = next
 [submodule "twin-data-processing"]
 	path = twin-data-processing
-	url = https://github.com/twinfoundation/twin-data-processing.git
+	url = https://github.com/iotaledger/twin-data-processing.git
 	branch = next
 [submodule "twin-document-management"]
 	path = twin-document-management
-	url = https://github.com/twinfoundation/twin-document-management.git
+	url = https://github.com/iotaledger/twin-document-management.git
 	branch = next
 [submodule "twin-node"]
 	path = twin-node
-	url = https://github.com/twinfoundation/twin-node.git
+	url = https://github.com/iotaledger/twin-node.git
 	branch = next
 [submodule "twin-rights-management"]
 	path = twin-rights-management
-	url = https://github.com/twinfoundation/twin-rights-management.git
+	url = https://github.com/iotaledger/twin-rights-management.git
 	branch = next
 [submodule "twin-federated-catalogue"]
 	path = twin-federated-catalogue
-	url = https://github.com/twinfoundation/twin-federated-catalogue.git
+	url = https://github.com/iotaledger/twin-federated-catalogue.git
 	branch = next
 [submodule "twin-playground"]
 	path = twin-playground
-	url = https://github.com/twinfoundation/twin-playground.git
+	url = https://github.com/iotaledger/twin-playground.git
 	branch = next
 [submodule "twin-synchronised-storage"]
 	path = twin-synchronised-storage
-	url = https://github.com/twinfoundation/twin-synchronised-storage.git
+	url = https://github.com/iotaledger/twin-synchronised-storage.git
 	branch = next
 [submodule "twin-rfcs"]
 	path = twin-rfcs
-	url = https://github.com/twinfoundation/twin-rfcs.git
+	url = https://github.com/iotaledger/twin-rfcs.git
 [submodule "twin-trust"]
 	path = twin-trust
-	url = https://github.com/twinfoundation/twin-trust.git
+	url = https://github.com/iotaledger/twin-trust.git
 	branch = next
 [submodule "twin-dataspace"]
 	path = twin-dataspace
-	url = https://github.com/twinfoundation/twin-dataspace.git
+	url = https://github.com/iotaledger/twin-dataspace.git
 	branch = next
 [submodule "twin-notarization"]
 	path = twin-notarization
-	url = https://github.com/twinfoundation/twin-notarization.git
+	url = https://github.com/iotaledger/twin-notarization.git
 	branch = next
 [submodule "twin-hierarchies"]
 	path = twin-hierarchies
-	url = https://github.com/twinfoundation/twin-hierarchies.git
+	url = https://github.com/iotaledger/twin-hierarchies.git
 	branch = next
 [submodule "twin-automation"]
 	path = twin-automation
-	url = https://github.com/twinfoundation/twin-automation.git
+	url = https://github.com/iotaledger/twin-automation.git
 	branch = next
 [submodule "twin-identity-management"]
 	path = twin-identity-management
-	url = https://github.com/twinfoundation/twin-identity-management.git
+	url = https://github.com/iotaledger/twin-identity-management.git
 	branch = next
 [submodule "twin-supply-chain"]
 	path = twin-supply-chain
-	url = https://github.com/twinfoundation/twin-supply-chain.git
+	url = https://github.com/iotaledger/twin-supply-chain.git
 	branch = next
