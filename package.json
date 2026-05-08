@@ -61,8 +61,6 @@
 		"twin-dataspace",
 		"twin-engine",
 		"twin-node",
-		"twin-identity-management",
-		"twin-supply-chain",
 		"twin-ui",
 		"twin-playground"
 	],
