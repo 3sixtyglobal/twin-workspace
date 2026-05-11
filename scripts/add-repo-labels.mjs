@@ -1,4 +1,10 @@
 import { Octokit } from '@octokit/rest';
+import { readFileSync } from 'fs';
+
+const workspacePackage = JSON.parse(
+	readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+);
+const SUBMODULES = ['twin-workspace', ...workspacePackage.submodules];
 
 const octokit = new Octokit({
 	auth: 'github_pat_...'
@@ -35,6 +41,11 @@ const LABELS = [
 		name: 'changes-requested',
 		color: 'e7e26f',
 		description: 'Changes have been requested for this issue'
+	},
+	{
+		name: 'chore',
+		color: '3eba9c',
+		description: 'A task that needs to be done but does not add any new features or fix any bugs'
 	}
 ];
 
@@ -48,7 +59,7 @@ async function addLabelToAllRepos() {
 
 		// To avoid hitting rate limits
 		await new Promise(resolve => setTimeout(resolve, 1000));
-		for (const repo of repos.filter(r => r.name.startsWith('twin-'))) {
+		for (const repo of repos.filter(r => SUBMODULES.includes(r.name))) {
 			await addLabelToRepo(repo.name);
 		}
 	} catch (err) {

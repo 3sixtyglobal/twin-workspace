@@ -145,11 +145,3 @@
 	path = twin-automation
 	url = https://github.com/iotaledger/twin-automation.git
 	branch = next
-[submodule "twin-identity-management"]
-	path = twin-identity-management
-	url = https://github.com/iotaledger/twin-identity-management.git
-	branch = next
-[submodule "twin-supply-chain"]
-	path = twin-supply-chain
-	url = https://github.com/iotaledger/twin-supply-chain.git
-	branch = next
