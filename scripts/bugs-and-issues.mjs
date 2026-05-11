@@ -14,15 +14,15 @@ files.forEach(file => {
 	console.log(`Processing: ${file}`);
 
 	try {
-		const parts = file.replace(/\\/g, "/").split('/');
+		const parts = file.replace(/\\/g, '/').split('/');
 		const packageJson = JSON.parse(fs.readFileSync(file, 'utf8'));
 
 		if (packageJson.name) {
 			packageJson.bugs = {
-				"url": `git+https://github.com/iotaledger/twin-${parts[0]}/issues`
+				url: `git+https://github.com/iotaledger/twin-${parts[0]}/issues`
 			};
 			packageJson.homepage = `https://twindev.org`;
-			fs.writeFileSync(file, `${JSON.stringify(packageJson, undefined, "\t")}\n`);
+			fs.writeFileSync(file, `${JSON.stringify(packageJson, undefined, '\t')}\n`);
 		}
 	} catch (error) {
 		console.log(`  Error: ${error.message}`);

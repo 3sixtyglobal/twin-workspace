@@ -22,7 +22,7 @@ async function run() {
 
 	const command = process.argv[2];
 	const args = process.argv.slice(3);
-	const single = args.includes('--single');
+	const single = args.includes('single');
 	const module = args.find(arg => !arg.startsWith('-'));
 	process.stdout.write(`Command: ${command}\n`);
 	if (single) {
@@ -37,7 +37,10 @@ async function run() {
 
 	const packageJson = await loadJson('package.json');
 	const updateExclusionList = await loadUpdateExclusionList();
-	const ncuExclusionArgs = updateExclusionList.flatMap(exclusion => ['-x', normaliseExclusion(exclusion)]);
+	const ncuExclusionArgs = updateExclusionList.flatMap(exclusion => [
+		'-x',
+		normaliseExclusion(exclusion)
+	]);
 	let submodules = packageJson.submodules;
 
 	if (module) {
@@ -86,9 +89,15 @@ async function run() {
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
 			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd('npx', ['--yes', 'npm-check-updates', '--deep', '-u', ...ncuExclusionArgs], submodule);
+			await runShellCmd(
+				'npx',
+				['--yes', 'npm-check-updates', '--deep', '-u', ...ncuExclusionArgs],
+				submodule
+			);
 			await runShellCmd('npm', ['install'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist:no-test'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'format'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'lint'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
 		} else {
 			throw new Error(`Unknown command ${command}`);
 		}

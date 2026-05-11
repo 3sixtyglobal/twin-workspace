@@ -7,23 +7,23 @@ The following commands are available across all the modules.
 By default, commands run across all submodules. You can also:
 
 - Start from a specific submodule by appending its name.
-- Run against a single submodule by using the `:single` variant and appending its name.
+- Run against a single submodule by appending its name followed by `single`.
 
-| Command | All submodules | From submodule | Single submodule |
-| --- | --- | --- | --- |
-| [Install](#install) | `npm run submodule:install` | `npm run submodule:install engine` | `npm run submodule:install:single engine` |
-| [Format](#format) | `npm run submodule:format` | `npm run submodule:format engine` | `npm run submodule:format:single engine` |
-| [Lint](#lint) | `npm run submodule:lint` | `npm run submodule:lint engine` | `npm run submodule:lint:single engine` |
-| [Dist](#dist) | `npm run submodule:dist` | `npm run submodule:dist engine` | `npm run submodule:dist:single engine` |
-| [Dist (no test)](#dist) | `npm run submodule:dist-no-test` | `npm run submodule:dist-no-test engine` | `npm run submodule:dist-no-test:single engine` |
-| [Docs](#docs) | `npm run submodule:docs` | `npm run submodule:docs engine` | `npm run submodule:docs:single engine` |
-| [Refresh dependencies and build](#refresh-dependencies-and-build) | `npm run submodule:refresh-deps-build` | `npm run submodule:refresh-deps-build engine` | `npm run submodule:refresh-deps-build:single engine` |
+| Command                                                           | All submodules                         | From submodule                                     | Single submodule                                          |
+| ----------------------------------------------------------------- | -------------------------------------- | -------------------------------------------------- | --------------------------------------------------------- |
+| [Install](#install)                                               | `npm run submodule:install`            | `npm run submodule:install twin-engine`            | `npm run submodule:install twin-engine single`            |
+| [Format](#format)                                                 | `npm run submodule:format`             | `npm run submodule:format twin-engine`             | `npm run submodule:format twin-engine single`             |
+| [Lint](#lint)                                                     | `npm run submodule:lint`               | `npm run submodule:lint twin-engine`               | `npm run submodule:lint twin-engine single`               |
+| [Dist](#dist)                                                     | `npm run submodule:dist`               | `npm run submodule:dist twin-engine`               | `npm run submodule:dist twin-engine single`               |
+| [Dist (no test)](#dist)                                           | `npm run submodule:dist-no-test`       | `npm run submodule:dist-no-test twin-engine`       | `npm run submodule:dist-no-test twin-engine single`       |
+| [Docs](#docs)                                                     | `npm run submodule:docs`               | `npm run submodule:docs twin-engine`               | `npm run submodule:docs twin-engine single`               |
+| [Refresh dependencies and build](#refresh-dependencies-and-build) | `npm run submodule:refresh-deps-build` | `npm run submodule:refresh-deps-build twin-engine` | `npm run submodule:refresh-deps-build twin-engine single` |
 
 ### Operational notes
 
 - Commands run in the order defined by the `submodules` array in `package.json`.
 - Commands fail fast, so execution stops at the first submodule with an error.
-- For non-`single` commands, providing a module name starts from that module and continues to the end.
+- Without `single`, providing a module name starts from that module and continues to the end.
 
 ### Quick examples
 
@@ -35,13 +35,13 @@ npm run submodule:format
 npm run submodule:dist-no-test
 
 # Build from a known failing point onward
-npm run submodule:dist-no-test ui
+npm run submodule:dist-no-test twin-ui
 
 # Run one module only
-npm run submodule:dist-no-test:single ui
+npm run submodule:dist-no-test twin-ui single
 
 # Clean, update dependencies, install and build one module
-npm run submodule:refresh-deps-build:single ui
+npm run submodule:refresh-deps-build twin-ui single
 ```
 
 ### Install
@@ -54,16 +54,16 @@ npm run submodule:install
 
 If you need to start the `install` process from a specific submodule just add that module name to the end of the command.
 
-e.g. To start again from the `engine` submodule.
+e.g. To start again from the `twin-engine` submodule.
 
 ```shell
-npm run submodule:install engine
+npm run submodule:install twin-engine
 ```
 
 To run install against a single submodule use:
 
 ```shell
-npm run submodule:install:single engine
+npm run submodule:install twin-engine single
 ```
 
 ### Format
@@ -77,13 +77,13 @@ npm run submodule:format
 To start formatting from a specific submodule use:
 
 ```shell
-npm run submodule:format engine
+npm run submodule:format twin-engine
 ```
 
 To run formatting against a single submodule use:
 
 ```shell
-npm run submodule:format:single engine
+npm run submodule:format twin-engine single
 ```
 
 ### Lint
@@ -97,13 +97,13 @@ npm run submodule:lint
 To start linting from a specific submodule use:
 
 ```shell
-npm run submodule:lint engine
+npm run submodule:lint twin-engine
 ```
 
 To run linting against a single submodule use:
 
 ```shell
-npm run submodule:lint:single engine
+npm run submodule:lint twin-engine single
 ```
 
 ### Dist
@@ -124,22 +124,22 @@ npm run submodule:dist-no-test
 
 If you need to start the `dist` or `dist-no-test` process from a specific submodule just add that module name to the end of the command.
 
-e.g. To start again from the `engine` submodule.
+e.g. To start again from the `twin-engine` submodule.
 
 ```shell
-npm run submodule:dist engine
+npm run submodule:dist twin-engine
 ```
 
 To run dist against a single submodule use:
 
 ```shell
-npm run submodule:dist:single engine
+npm run submodule:dist twin-engine single
 ```
 
 To run dist-no-test against a single submodule use:
 
 ```shell
-npm run submodule:dist-no-test:single engine
+npm run submodule:dist-no-test twin-engine single
 ```
 
 ### Docs
@@ -153,13 +153,13 @@ npm run submodule:docs
 To start docs generation from a specific submodule use:
 
 ```shell
-npm run submodule:docs engine
+npm run submodule:docs twin-engine
 ```
 
 To run docs generation against a single submodule use:
 
 ```shell
-npm run submodule:docs:single engine
+npm run submodule:docs twin-engine single
 ```
 
 ### Refresh dependencies and build
@@ -173,13 +173,13 @@ npm run submodule:refresh-deps-build
 To start from a specific submodule use:
 
 ```shell
-npm run submodule:refresh-deps-build engine
+npm run submodule:refresh-deps-build twin-engine
 ```
 
 To run against a single submodule use:
 
 ```shell
-npm run submodule:refresh-deps-build:single engine
+npm run submodule:refresh-deps-build twin-engine single
 ```
 
 `refresh-deps-build` uses `npm-check-updates` and reads package exclusions from [`scripts/update-exclusion.json`](./scripts/update-exclusion.json).
@@ -193,8 +193,5 @@ This is useful because it lets you keep known-sensitive dependencies pinned whil
 The file must contain a JSON array of package names to exclude from updates, for example:
 
 ```json
-[
-   "package-to-pin",
-   "@scope/another-package"
-]
+["package-to-pin", "@scope/another-package"]
 ```

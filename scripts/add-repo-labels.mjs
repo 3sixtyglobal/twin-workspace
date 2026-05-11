@@ -1,35 +1,40 @@
-import { Octokit } from "@octokit/rest";
+import { Octokit } from '@octokit/rest';
 
 const octokit = new Octokit({
-	auth: "github_pat_..."
+	auth: 'github_pat_...'
 });
 
-const ORG = "iotaledger";
+const ORG = 'iotaledger';
 const LABELS = [
 	{
-		name: "autorelease: pending",
-		color: "ededed",
-		description: "This issue is pending an autorelease",
+		name: 'autorelease: pending',
+		color: 'ededed',
+		description: 'This issue is pending an autorelease'
 	},
 	{
-		name: "autorelease: tagged",
-		color: "74C7AC",
-		description: "This issue has been tagged by the autorelease",
+		name: 'autorelease: tagged',
+		color: '74C7AC',
+		description: 'This issue has been tagged by the autorelease'
 	},
 	{
-		name: "needs-triage",
-		color: "f0650b",
-		description: "Issues that need triage",
+		name: 'needs-triage',
+		color: 'f0650b',
+		description: 'Issues that need triage'
 	},
 	{
-		name: "information-needed",
-		color: "7ecd6e",
-		description: "More information is needed from the issue reporter",
+		name: 'information-needed',
+		color: '7ecd6e',
+		description: 'More information is needed from the issue reporter'
 	},
 	{
-		name: "blocked",
-		color: "b03b06",
-		description: "This issue is blocked by another issue",
+		name: 'blocked',
+		color: 'b03b06',
+		description: 'This issue is blocked by another issue'
+	},
+	{
+		name: 'changes-requested',
+		color: 'e7e26f',
+		description: 'Changes have been requested for this issue'
 	}
 ];
 
@@ -37,17 +42,17 @@ async function addLabelToAllRepos() {
 	try {
 		const repos = await octokit.paginate(octokit.repos.listForOrg, {
 			org: ORG,
-			type: "all",
-			per_page: 100,
+			type: 'all',
+			per_page: 100
 		});
 
 		// To avoid hitting rate limits
 		await new Promise(resolve => setTimeout(resolve, 1000));
-		for (const repo of repos.filter((r) => r.name.startsWith("twin-"))) {
+		for (const repo of repos.filter(r => r.name.startsWith('twin-'))) {
 			await addLabelToRepo(repo.name);
 		}
 	} catch (err) {
-		console.error("Failed to fetch repositories:", err.message);
+		console.error('Failed to fetch repositories:', err.message);
 	}
 }
 
@@ -57,7 +62,7 @@ async function addLabelToRepo(repoName) {
 			await octokit.issues.createLabel({
 				owner: ORG,
 				repo: repoName,
-				...label,
+				...label
 			});
 			console.log(`✅ Label ${label.name} added to ${repoName}`);
 		} catch (err) {

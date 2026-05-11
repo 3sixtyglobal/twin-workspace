@@ -13,6 +13,8 @@
 		"node": ">=20.0.0"
 	},
 	"scripts": {
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
 		"submodule:install": "node ./scripts/submodules.mjs install",
 		"submodule:format": "node ./scripts/submodules.mjs format",
 		"submodule:lint": "node ./scripts/submodules.mjs lint",
@@ -23,8 +25,7 @@
 		"submodule:docs": "node ./scripts/submodules.mjs docs",
 		"submodule:refresh-deps": "node ./scripts/submodules.mjs refresh-deps",
 		"submodule:refresh-deps-build": "node ./scripts/submodules.mjs refresh-deps-build",
-		"submodule:update-deps-build": "node ./scripts/submodules.mjs update-deps-build",
-		"keywords": "node ./scripts/keywords.mjs"
+		"submodule:update-deps-build": "node ./scripts/submodules.mjs update-deps-build"
 	},
 	"submodules": [
 		"twin-framework",
@@ -67,7 +68,8 @@
 	"type": "module",
 	"devDependencies": {
 		"@octokit/rest": "22.0.0",
-		"glob": "^11.0.3"
+		"glob": "11.0.3",
+		"prettier": "3.8.3"
 	},
 	"bugs": {
 		"url": "git+https://github.com/iotaledger/workspace/issues"
