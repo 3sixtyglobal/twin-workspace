@@ -2,6 +2,9 @@ name: Workspace Submodule Build
 
 # Run automatically for changes on next and allow manual execution.
 on:
+  schedule:
+    - cron: '0 0 * * *'
+    - cron: '0 12 * * *'
   workflow_dispatch:
     inputs:
       runTesting:
@@ -16,12 +19,6 @@ on:
   repository_dispatch:
     types:
       - submodule-published
-  pull_request:
-    branches:
-      - next
-  push:
-    branches:
-      - next
 
 # Cancel older in-progress runs for the same branch/PR.
 concurrency:
