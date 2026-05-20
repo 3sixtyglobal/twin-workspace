@@ -50,20 +50,8 @@ const LABELS = [
 ];
 
 async function addLabelToAllRepos() {
-	try {
-		const repos = await octokit.paginate(octokit.repos.listForOrg, {
-			org: ORG,
-			type: 'all',
-			per_page: 100
-		});
-
-		// To avoid hitting rate limits
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		for (const repo of repos.filter(r => SUBMODULES.includes(r.name))) {
-			await addLabelToRepo(repo.name);
-		}
-	} catch (err) {
-		console.error('Failed to fetch repositories:', err.message);
+	for (const repoName of SUBMODULES) {
+		await addLabelToRepo(repoName);
 	}
 }
 
