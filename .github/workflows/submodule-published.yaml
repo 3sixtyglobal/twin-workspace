@@ -7,6 +7,14 @@ on:
     - cron: '0 12 * * 1-5'
   workflow_dispatch:
     inputs:
+      releaseType:
+        description: Release type to build
+        required: true
+        type: choice
+        default: '🚧 prerelease (next branch)'
+        options:
+          - '🚧 prerelease (next branch)'
+          - '🚀 production (main branch)'
       runTesting:
         description: Run submodule builds with testing enabled
         required: true
@@ -33,12 +41,26 @@ jobs:
       group: ${{ github.event.repository.private && 'twin' || 'default' }}
     outputs:
       submodules: ${{ steps.get-submodules.outputs.submodules }}
+      branch: ${{ steps.set-branch.outputs.branch }}
 
     steps:
+      - name: Set target branch
+        id: set-branch
+        run: |
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            BRANCH="${{ github.event.client_payload.branch }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [[ "${{ github.event.inputs.releaseType }}" == *"main"* ]]; then
+            BRANCH="main"
+          else
+            BRANCH="next"
+          fi
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
+          ref: ${{ steps.set-branch.outputs.branch }}
           submodules: false
 
       - name: Setup Node
@@ -78,7 +100,7 @@ jobs:
         with:
           token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
           repository: iotaledger/${{ matrix.submodule }}
-          ref: next
+          ref: ${{ needs.read-submodules.outputs.branch }}
           path: ${{ matrix.submodule }}
           submodules: false
           fetch-depth: 1
