@@ -18,3 +18,11 @@ Detailed documentation is split into dedicated root files:
 - [Development Guide](./DEVELOPMENT.md)
 - [NPM Commands](./NPM_COMMANDS.md)
 - [Workflow Guide](./WORKFLOWS.md)
+
+## Project audit
+
+Generated analysis of all submodules, packages, and dependencies:
+
+- [Project Audit (Markdown)](./docs/project-audit/index.md)
+- [Project Audit (Interactive HTML)](./docs/project-audit/index.html)
+- [Project Audit (PDF)](./docs/project-audit/index.pdf)

@@ -84,7 +84,7 @@ async function run() {
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
 			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
 			await runShellCmd('npm', ['install'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist:no-test'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
 		} else if (command === 'update-deps-build') {
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
 			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
