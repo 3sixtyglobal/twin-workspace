@@ -21,22 +21,34 @@ async function run() {
 	}
 
 	const command = process.argv[2];
+	const args = process.argv.slice(3);
+	const single = args.includes('single');
+	const module = args.find(arg => !arg.startsWith('-'));
 	process.stdout.write(`Command: ${command}\n`);
+	if (single) {
+		process.stdout.write(`Single: ${single}\n`);
+	}
 	process.stdout.write(`\n`);
 
-	const module = process.argv[3];
 	if (module) {
-		process.stdout.write(`Start Module: ${module}\n`);
+		process.stdout.write(`${single ? 'Module' : 'Start Module'}: ${module}\n`);
 		process.stdout.write(`\n`);
 	}
 
 	const packageJson = await loadJson('package.json');
+	const updateExclusionList = await loadUpdateExclusionList();
+	const ncuExclusionArgs = updateExclusionList.flatMap(exclusion => [
+		'-x',
+		normaliseExclusion(exclusion)
+	]);
 	let submodules = packageJson.submodules;
 
 	if (module) {
 		const index = submodules.indexOf(module);
 		if (index === -1) {
 			throw new Error(`Module ${module} not found`);
+		} else if (single) {
+			submodules = [module];
 		} else {
 			submodules = submodules.slice(index);
 		}
@@ -44,17 +56,50 @@ async function run() {
 
 	for (const submodule of submodules) {
 		process.stdout.write(`Submodule: ${submodule}\n`);
-		if (command === "install") {
+		if (command === 'install') {
 			await runShellCmd('npm', ['install'], submodule);
-		} else if (command === "lint") {
-			await fs.rm(`${submodule}/.eslintcache`, {
-				force: true
-			});
+		} else if (command === 'format') {
+			await runShellCmd('npm', ['run', 'format'], submodule);
+		} else if (command === 'lint') {
+			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
 			await runShellCmd('npm', ['run', 'lint'], submodule);
-		} else if (command === "dist") {
+		} else if (command === 'lint:code') {
+			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
+			await runShellCmd('npm', ['run', 'lint:code'], submodule);
+		} else if (command === 'dist') {
 			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
-		} else if (command === "dist-no-test") {
+		} else if (command === 'dist-no-test') {
 			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist:no-test'], submodule);
+		} else if (command === 'test') {
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'test'], submodule);
+		} else if (command === 'docs') {
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'docs'], submodule);
+		} else if (command === 'refresh-deps') {
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
+			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
+			await runShellCmd('npm', ['install'], submodule);
+		} else if (command === 'refresh-deps-build') {
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
+			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
+			await runShellCmd('npm', ['install'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
+		} else if (command === 'update-deps-build') {
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
+			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
+			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
+			await runShellCmd(
+				'npx',
+				['--yes', 'npm-check-updates', '--deep', '-u', ...ncuExclusionArgs],
+				submodule
+			);
+			await runShellCmd('npm', ['install'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'format'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'lint'], submodule);
+			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
+		} else {
+			throw new Error(`Unknown command ${command}`);
 		}
 		process.stdout.write(`\n`);
 	}
@@ -69,6 +114,29 @@ async function loadJson(filePath) {
 	const content = await fs.readFile(filePath, 'utf8');
 
 	return JSON.parse(content);
+}
+
+/**
+ * Load update exclusions for npm-check-updates.
+ * @returns The exclusions loaded from scripts/update-exclusion.json.
+ */
+async function loadUpdateExclusionList() {
+	const exclusions = await loadJson('scripts/update-exclusion.json');
+
+	if (!Array.isArray(exclusions) || exclusions.some(exclusion => typeof exclusion !== 'string')) {
+		throw new Error('scripts/update-exclusion.json must contain an array of strings');
+	}
+
+	return exclusions;
+}
+
+/**
+ * Normalise exclusion values so each value can be used with -x.
+ * @param exclusion The exclusion entry.
+ * @returns The normalised package name.
+ */
+function normaliseExclusion(exclusion) {
+	return exclusion.replace(/^-x\s*/, '').trim();
 }
 
 /**

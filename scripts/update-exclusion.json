@@ -1,0 +1,11 @@
+[
+	"tailwindcss",
+	"storybook",
+	"@storybook/*",
+	"vite",
+	"eslint-plugin-storybook",
+	"flowbite-svelte*",
+	"@vitejs/plugin-react",
+	"@sveltejs/vite-plugin-svelte",
+	"lucide-react"
+]

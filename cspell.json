@@ -1,12 +1,7 @@
 {
 	"language": "en-GB",
 	"ignorePaths": [],
-	"words": [
-		"Stiftung",
-	],
-	"ignoreRegExpList": [
-	],
-	"ignoreWords": [
-		"Cunknown"
-	]
+	"words": ["Stiftung"],
+	"ignoreRegExpList": [],
+	"ignoreWords": ["Cunknown"]
 }
