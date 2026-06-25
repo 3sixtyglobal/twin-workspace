@@ -34,6 +34,7 @@ async function run() {
 		process.stdout.write(`Processing: ${submodule}\n`);
 
 		try {
+			await execCommand('git', ['reset', '--hard'], submodule);
 			await execCommand('git', ['checkout', branch], submodule);
 			await execCommand('git', ['pull', 'origin', branch], submodule);
 			process.stdout.write(`  Done\n`);
