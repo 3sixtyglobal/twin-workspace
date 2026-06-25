@@ -25,7 +25,9 @@
 		"submodule:docs": "node ./scripts/submodules.mjs docs",
 		"submodule:refresh-deps": "node ./scripts/submodules.mjs refresh-deps",
 		"submodule:refresh-deps-build": "node ./scripts/submodules.mjs refresh-deps-build",
-		"submodule:update-deps-build": "node ./scripts/submodules.mjs update-deps-build"
+		"submodule:update-deps-build": "node ./scripts/submodules.mjs update-deps-build",
+		"submodule:align-main": "node ./scripts/submodule-align.mjs main",
+		"submodule:align-next": "node ./scripts/submodule-align.mjs next"
 	},
 	"submodules": [
 		"twin-framework",
