@@ -1,0 +1,94 @@
+name: Align Branches
+
+# Aligns all submodules to their latest next branch, commits and pushes,
+# then merges next into main, aligns submodules to main, commits and pushes.
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  align-next:
+    name: Align next branch
+    runs-on:
+      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
+      group: ${{ github.event.repository.private && 'twin' || 'default' }}
+
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
+          ref: next
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Align submodules to next
+        run: npm run submodule:align-next
+
+      - name: Commit and push
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No submodule changes to commit."
+          else
+            git commit -m "chore: update submodules"
+            git push origin next
+          fi
+
+  align-main:
+    name: Align main branch
+    needs: align-next
+    runs-on:
+      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
+      group: ${{ github.event.repository.private && 'twin' || 'default' }}
+
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
+          ref: main
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge next into main
+        run: |
+          git fetch origin next
+          git merge origin/next --no-edit
+
+      - name: Align submodules to main
+        run: npm run submodule:align-main
+
+      - name: Commit and push
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No submodule changes to commit."
+          else
+            git commit -m "chore: update submodules"
+            git push origin main
+          fi
