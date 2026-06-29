@@ -31,10 +31,17 @@ jobs:
         with:
           node-version: 24
 
-      - name: Configure git identity
+      - name: Import GPG key
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "${{ secrets.TWIN_GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
+          echo "TWIN_GPG_KEY_ID=${{ secrets.TWIN_GPG_KEY_ID }}" >> $GITHUB_ENV
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github@twindev.org"
+          git config --global user.name "TWIN GitHub Bot"
+          git config --global user.signingkey "$TWIN_GPG_KEY_ID"
+          git config --global commit.gpgsign true
 
       - name: Align submodules to next
         run: npm run submodule:align-next
@@ -45,8 +52,17 @@ jobs:
           if git diff --cached --quiet; then
             echo "No next submodule changes to commit."
           else
-            git commit -m "chore: update next submodules"
+            git commit -S -m "chore: update next submodules"
             git push origin next
+          fi
+
+      - name: Cleanup GPG key
+        if: always()
+        run: |
+          FINGERPRINT=$(gpg --list-secret-keys --with-colons "$TWIN_GPG_KEY_ID" | awk -F: '/fpr:/ {print $10}' | head -1)
+          if [ -n "$FINGERPRINT" ]; then
+            gpg --batch --yes --delete-secret-keys "$FINGERPRINT" || true
+            gpg --batch --yes --delete-keys "$FINGERPRINT" || true
           fi
 
   align-main:
@@ -70,10 +86,17 @@ jobs:
         with:
           node-version: 24
 
-      - name: Configure git identity
+      - name: Import GPG key
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          echo "${{ secrets.TWIN_GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
+          echo "TWIN_GPG_KEY_ID=${{ secrets.TWIN_GPG_KEY_ID }}" >> $GITHUB_ENV
+
+      - name: Configure Git
+        run: |
+          git config --global user.email "github@twindev.org"
+          git config --global user.name "TWIN GitHub Bot"
+          git config --global user.signingkey "$TWIN_GPG_KEY_ID"
+          git config --global commit.gpgsign true
 
       - name: Apply next changes to main
         run: |
@@ -93,6 +116,15 @@ jobs:
           if git diff --cached --quiet; then
             echo "No main submodule changes to commit."
           else
-            git commit -m "chore: update main submodules"
+            git commit -S -m "chore: update main submodules"
             git push origin main
+          fi
+
+      - name: Cleanup GPG key
+        if: always()
+        run: |
+          FINGERPRINT=$(gpg --list-secret-keys --with-colons "$TWIN_GPG_KEY_ID" | awk -F: '/fpr:/ {print $10}' | head -1)
+          if [ -n "$FINGERPRINT" ]; then
+            gpg --batch --yes --delete-secret-keys "$FINGERPRINT" || true
+            gpg --batch --yes --delete-keys "$FINGERPRINT" || true
           fi
