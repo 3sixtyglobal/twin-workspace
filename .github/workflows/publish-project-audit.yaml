@@ -1,0 +1,57 @@
+name: Publish Project Audit
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+
+env:
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_AUDIT }}
+  VERCEL_ORG_ID: ${{ secrets.TWIN_VERCEL_ORG_ID }}
+
+jobs:
+  deploy:
+    runs-on:
+      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
+      group: ${{ github.event.repository.private && 'twin' || 'default' }}
+
+    steps:
+      # Clone the repository to the runner
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Using GITHUB_TOKEN makes actions run as github-actions bot
+          ref: next # Checkout the calculated branch
+          fetch-depth: 0 # Needed for merge operations
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel
+
+      # Deploy To vercel and output the deployment URL as a GitHub output from the step
+      - name: Deploy to Vercel
+        id: deploy
+        run: |
+          cd docs/project-audit
+          DEPLOYMENT_URL=$(vercel deploy \
+          --token=${{ secrets.TWIN_VERCEL_TOKEN }} \
+          --scope=${{ secrets.TWIN_VERCEL_SCOPE }} \
+          --target='production' \
+          --force)
+          echo "deployment-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+
+      # Use the deployment URL to set an alias for the deployment
+      - name: Set Alias
+        run: |
+          vercel alias set \
+          ${{ steps.deploy.outputs.deployment-url }} \
+          ${{secrets.DOMAIN_AUDIT_PROD}} \
+          --token=${{ secrets.TWIN_VERCEL_TOKEN }} \
+          --scope=${{ secrets.TWIN_VERCEL_SCOPE }}

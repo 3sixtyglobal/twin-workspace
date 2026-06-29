@@ -1,660 +1,1578 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TWIN Project Audit</title>
-<link rel="icon" type="image/png" href="https://assets.twindev.org/images/favicon.png">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#f0f2f5;color:#1a1a2e;line-height:1.5}
-.site-header{background:#11224E;padding:16px 32px;display:flex;align-items:center;gap:16px;border-bottom:3px solid #FF7200}
-.site-header svg{flex-shrink:0}
-.header-title{color:#fff;font-size:20px;font-weight:700;letter-spacing:-0.01em}
-.header-sub{color:#a0aec0;font-size:12px;margin-top:2px}
-.print-header{display:none}
-.stats-strip{background:#11224E;display:grid;grid-template-columns:repeat(7,1fr);border-bottom:3px solid #FF7200;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.stat-cell{padding:20px 12px;text-align:center;border-right:1px solid rgba(255,255,255,0.08)}
-.stat-cell:last-child{border-right:none}
-.stat-number{display:block;font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.02em;line-height:1}
-.stat-number.accent{color:#FF7200}
-.stat-label{display:block;font-size:9px;text-transform:uppercase;letter-spacing:0.1em;color:#8899bb;margin-top:6px}
-.chart-section{background:#fff;margin:24px 32px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);padding:24px}
-.chart-section h2{font-size:16px;font-weight:700;color:#11224E;margin-bottom:4px}
-.chart-sub{font-size:12px;color:#667;margin-bottom:20px}
-canvas{display:block;width:100%;height:auto}
-.chart-legend{display:flex;gap:20px;margin-top:12px;font-size:12px;color:#444}
-.legend-dot{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:middle}
-.explorer{background:#fff;margin:0 32px 32px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);overflow:hidden}
-.tab-bar{display:flex;border-bottom:2px solid #e8eaf0;background:#f8f9fc}
-.tab-btn{padding:14px 22px;background:none;border:none;cursor:pointer;font-size:13px;color:#667;font-weight:500;border-bottom:3px solid transparent;margin-bottom:-2px;transition:all 0.15s}
-.tab-btn:hover{color:#11224E;background:#f0f2f8}
-.tab-btn.active{color:#FF7200;border-bottom-color:#FF7200;font-weight:700;background:#fff}
-.tab-count{display:inline-flex;align-items:center;justify-content:center;background:#e8eaf0;color:#555;border-radius:10px;padding:1px 7px;font-size:11px;margin-left:6px;font-weight:600}
-.tab-btn.active .tab-count{background:#FF7200;color:#fff}
-.search-bar{padding:14px 20px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:12px}
-.search-input{flex:1;border:1px solid #dde;border-radius:6px;padding:8px 12px;font-size:13px;outline:none;font-family:inherit}
-.search-input:focus{border-color:#FF7200;box-shadow:0 0 0 2px rgba(255,114,0,0.12)}
-.search-label{font-size:12px;color:#888}
-.table-wrap{overflow-x:auto;max-height:560px;overflow-y:auto}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{position:sticky;top:0;background:#f8f9fc;padding:10px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#667;border-bottom:2px solid #eee;white-space:nowrap}
-th.right{text-align:right}
-td{padding:9px 14px;border-bottom:1px solid #f0f2f5;vertical-align:middle}
-tr:hover td{background:#fafbff}
-.pkg-name{font-weight:600;color:#11224E;font-size:12px}
-.pkg-name a{color:#11224E;text-decoration:none}
-.pkg-name a:hover{color:#FF7200;text-decoration:underline}
-.version{font-family:monospace;font-size:11px;color:#555;background:#f0f2f5;padding:2px 6px;border-radius:4px}
-.sub-badge{font-size:10px;background:#e8edf8;color:#11224E;padding:2px 7px;border-radius:10px;white-space:nowrap}
-.ts-lines{text-align:right;font-variant-numeric:tabular-nums;color:#445;font-size:12px}
-.test-pct{text-align:right;font-variant-numeric:tabular-nums;font-size:12px}
-.sub-name{font-weight:600;color:#11224E}
-#print-all{display:none}
-@media screen{#print-all{display:none}}
-@media print{
-  .site-header,.chart-section,.tab-bar,.search-bar,.no-print{display:none!important}
-  .explorer{display:none!important}
-  body{background:#fff}
-  #print-all{display:block!important}
-  .print-header{display:flex!important;align-items:center;gap:18px;background:#11224E;padding:20px 36px 16px;border-bottom:3px solid #FF7200;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .ph-logo{flex-shrink:0}
-  .ph-title{display:block;color:#fff;font-size:18px;font-weight:700}
-  .ph-sub{display:block;color:#a0aec0;font-size:11px;margin-top:3px}
-  .stats-strip{display:grid!important;grid-template-columns:repeat(7,1fr)!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .stat-number{font-size:18px!important;letter-spacing:-0.01em}
-  .stat-cell{padding:14px 10px!important}
-  .stat-label{font-size:9px;letter-spacing:0.06em}
-  .p-section{page-break-inside:avoid;margin:20px 0}
-  .p-h2{font-size:14px;font-weight:700;color:#11224E;border-bottom:2px solid #FF7200;padding-bottom:6px;margin-bottom:12px}
-  .p-table{width:100%;border-collapse:collapse;font-size:10px}
-  .p-table th{background:#11224E;color:#fff;padding:6px 8px;text-align:left;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .p-table td{padding:4px 8px;border-bottom:1px solid #eee}
-  .p-table tr:nth-child(even) td{background:#f8f9fc;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .p-obs{font-size:11px;line-height:1.6;color:#333}
-  .p-obs li{margin-bottom:4px}
-}
-</style>
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>TWIN Core Project Audit</title>
+		<meta
+			name="description"
+			content="Interactive package inventory, dependency analysis and TypeScript line counts across all TWIN submodules."
+		/>
+		<link rel="icon" type="image/png" href="https://assets.twindev.org/images/favicon.png" />
+		<style>
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+			body {
+				font-family: system-ui, sans-serif;
+				background: #f5f6fa;
+				color: #1a2035;
+				font-size: 14px;
+				line-height: 1.5;
+			}
+			a {
+				color: #ff7200;
+				text-decoration: none;
+			}
+			a:hover {
+				text-decoration: underline;
+			}
 
-<header class="site-header no-print">
-  <svg width="28" height="25" viewBox="0 0 69 61" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M34.5393 33.4719C21.5724 33.4719 9.82974 37.8661 1.28541 44.9917C0.906845 45.3066 0.867926 45.8692 1.18635 46.2442C4.25735 49.9096 8.15626 53.0407 12.6495 55.4537C12.9927 55.6376 13.4208 55.5704 13.6933 55.298C17.5426 51.4486 21.1656 46.6688 26.2639 44.4186C26.653 44.2452 27.0988 44.5353 27.0988 44.9599V59.4799C27.0988 59.9222 27.4173 60.3008 27.856 60.3609C30.0283 60.6652 32.2608 60.8209 34.5393 60.8209C36.8178 60.8209 39.0503 60.6652 41.2226 60.3609C41.6614 60.2972 41.9798 59.9187 41.9798 59.4799V44.9599C41.9798 44.5353 42.4256 44.2452 42.8147 44.4186C47.913 46.6688 51.536 51.4486 55.3854 55.298C55.6613 55.574 56.0859 55.6376 56.4291 55.4537C60.9224 53.0407 64.8213 49.9096 67.8923 46.2442C68.2107 45.8692 68.1718 45.3066 67.7932 44.9917C59.2489 37.8661 47.5026 33.4719 34.5393 33.4719Z" fill="#FFFFFF"/>
-    <path d="M34.5392 28.2073C47.5061 28.2073 59.2488 23.8131 67.7931 16.6875C68.1717 16.3726 68.2106 15.8101 67.8922 15.4351C64.8212 11.7697 60.9223 8.63851 56.429 6.22558C56.0858 6.0416 55.6577 6.10883 55.3853 6.38125C51.5359 10.2306 47.913 15.0105 42.8147 17.2607C42.4255 17.434 41.9797 17.1439 41.9797 16.7194V2.19931C41.9797 1.75706 41.6613 1.37849 41.2226 1.31834C39.0502 1.01407 36.8177 0.858398 34.5392 0.858398C32.2607 0.858398 30.0282 1.01407 27.8559 1.31834C27.4172 1.38203 27.0988 1.76059 27.0988 2.19931V16.7194C27.0988 17.1439 26.653 17.434 26.2638 17.2607C21.1655 15.0105 17.5426 10.2306 13.6932 6.38125C13.4172 6.10529 12.9927 6.0416 12.6495 6.22558C8.15264 8.63851 4.25374 11.7697 1.18274 15.4351C0.864314 15.8101 0.903232 16.3726 1.2818 16.6875C9.82613 23.8131 21.5724 28.2073 34.5357 28.2073H34.5392Z" fill="#FFFFFF"/>
-  </svg>
-  <div>
-    <div class="header-title">TWIN Project Audit</div>
-    <div class="header-sub">Generated 2026-06-24 &middot; next branch &middot; 34 submodules &middot; 195 @twin.org packages</div>
-  </div>
-</header>
+			/* Header */
+			.site-header {
+				background: #11224e;
+				color: #fff;
+				padding: 16px 32px;
+				display: flex;
+				align-items: center;
+				gap: 16px;
+				border-bottom: 3px solid #ff7200;
+			}
+			.site-header svg {
+				flex-shrink: 0;
+			}
+			.header-text h1 {
+				font-size: 20px;
+				font-weight: 700;
+				letter-spacing: -0.01em;
+			}
+			.header-text p {
+				font-size: 12px;
+				opacity: 0.75;
+				margin-top: 2px;
+			}
+			.header-nav {
+				margin-left: auto;
+				display: flex;
+				gap: 8px;
+				align-items: center;
+			}
+			.header-nav-link {
+				color: rgba(255, 255, 255, 0.8);
+				font-size: 13px;
+				font-weight: 600;
+				padding: 6px 14px;
+				border-radius: 6px;
+				border: 1px solid rgba(255, 255, 255, 0.2);
+				transition:
+					background 0.15s,
+					color 0.15s;
+			}
+			.header-nav-link:hover {
+				background: rgba(255, 255, 255, 0.1);
+				color: #fff;
+				text-decoration: none;
+			}
 
-<div class="stats-strip">
-  <div class="stat-cell"><span class="stat-number">34</span><span class="stat-label">Submodules</span></div>
-  <div class="stat-cell"><span class="stat-number">195</span><span class="stat-label">@twin.org packages</span></div>
-  <div class="stat-cell"><span class="stat-number">322,004</span><span class="stat-label">Source lines</span></div>
-  <div class="stat-cell"><span class="stat-number">132,505</span><span class="stat-label">Spec lines</span></div>
-  <div class="stat-cell"><span class="stat-number">52</span><span class="stat-label">Prod dependencies</span></div>
-  <div class="stat-cell"><span class="stat-number">37</span><span class="stat-label">Dev dependencies</span></div>
-  <div class="stat-cell"><span class="stat-number accent">41.2%</span><span class="stat-label">Spec / source</span></div>
-</div>
+			/* Print header (hidden on screen) */
+			.print-header {
+				display: none;
+			}
+			@media print {
+				.print-header {
+					display: flex !important;
+					align-items: center;
+					gap: 18px;
+					background: #11224e;
+					padding: 20px 36px 16px;
+					border-bottom: 3px solid #ff7200;
+					-webkit-print-color-adjust: exact;
+					print-color-adjust: exact;
+				}
+				.ph-title {
+					color: #fff;
+					font-size: 18px;
+					font-weight: 700;
+				}
+				.ph-sub {
+					color: rgba(255, 255, 255, 0.75);
+					font-size: 11px;
+					display: block;
+					margin-top: 4px;
+				}
+			}
 
-<div class="chart-section no-print">
-  <h2>Codebase Depth by Submodule</h2>
-  <div class="chart-sub">Square-root scale &mdash; split: source (navy) / spec (orange)</div>
-  <canvas id="depthChart"></canvas>
-  <div class="chart-legend">
-    <span><span class="legend-dot" style="background:#11224E"></span>Source</span>
-    <span><span class="legend-dot" style="background:#FF7200"></span>Spec</span>
-  </div>
-</div>
+			/* Stats strip */
+			.stats-strip {
+				background: #11224e;
+				display: grid;
+				grid-template-columns: repeat(7, 1fr);
+				-webkit-print-color-adjust: exact;
+				print-color-adjust: exact;
+			}
+			.stat-cell {
+				padding: 20px 16px;
+				text-align: center;
+				border-right: 1px solid rgba(255, 255, 255, 0.1);
+			}
+			.stat-cell:last-child {
+				border-right: none;
+			}
+			.stat-number {
+				display: block;
+				font-size: 28px;
+				font-weight: 700;
+				color: #fff;
+				letter-spacing: -0.02em;
+			}
+			.stat-cell.accent .stat-number {
+				color: #ff7200;
+			}
+			.stat-label {
+				display: block;
+				font-size: 10px;
+				font-weight: 600;
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+				color: rgba(255, 255, 255, 0.6);
+				margin-top: 4px;
+			}
 
-<div class="explorer no-print">
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('packages')">Packages <span class="tab-count" id="badge-packages">195</span></button>
-    <button class="tab-btn" onclick="switchTab('submodules')">Submodules <span class="tab-count" id="badge-submodules">34</span></button>
-    <button class="tab-btn" onclick="switchTab('prod')">Production deps <span class="tab-count" id="badge-prod">52</span></button>
-    <button class="tab-btn" onclick="switchTab('dev')">Dev deps <span class="tab-count" id="badge-dev">37</span></button>
-  </div>
-  <div class="search-bar">
-    <input class="search-input" id="searchInput" type="text" placeholder="Filter..." oninput="renderBody()">
-    <span class="search-label" id="rowCountLabel"></span>
-  </div>
-  <div class="table-wrap" id="tableWrap"></div>
-</div>
+			/* Chart */
+			.chart-section {
+				background: #fff;
+				margin: 24px 24px 0;
+				border-radius: 10px;
+				padding: 24px;
+				box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+			}
+			.chart-section h2 {
+				font-size: 15px;
+				font-weight: 700;
+				color: #11224e;
+				margin-bottom: 16px;
+			}
+			canvas#barChart {
+				width: 100%;
+				display: block;
+			}
+			.chart-legend {
+				display: flex;
+				gap: 20px;
+				margin-top: 10px;
+				font-size: 12px;
+			}
+			.legend-item {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+			}
+			.legend-swatch {
+				width: 12px;
+				height: 12px;
+				border-radius: 2px;
+				flex-shrink: 0;
+			}
 
-<div id="print-all">
-  <div class="print-header">
-    <svg class="ph-logo" width="36" height="32" viewBox="0 0 69 61" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M34.5393 33.4719C21.5724 33.4719 9.82974 37.8661 1.28541 44.9917C0.906845 45.3066 0.867926 45.8692 1.18635 46.2442C4.25735 49.9096 8.15626 53.0407 12.6495 55.4537C12.9927 55.6376 13.4208 55.5704 13.6933 55.298C17.5426 51.4486 21.1656 46.6688 26.2639 44.4186C26.653 44.2452 27.0988 44.5353 27.0988 44.9599V59.4799C27.0988 59.9222 27.4173 60.3008 27.856 60.3609C30.0283 60.6652 32.2608 60.8209 34.5393 60.8209C36.8178 60.8209 39.0503 60.6652 41.2226 60.3609C41.6614 60.2972 41.9798 59.9187 41.9798 59.4799V44.9599C41.9798 44.5353 42.4256 44.2452 42.8147 44.4186C47.913 46.6688 51.536 51.4486 55.3854 55.298C55.6613 55.574 56.0859 55.6376 56.4291 55.4537C60.9224 53.0407 64.8213 49.9096 67.8923 46.2442C68.2107 45.8692 68.1718 45.3066 67.7932 44.9917C59.2489 37.8661 47.5026 33.4719 34.5393 33.4719Z" fill="#FFFFFF"/>
-      <path d="M34.5392 28.2073C47.5061 28.2073 59.2488 23.8131 67.7931 16.6875C68.1717 16.3726 68.2106 15.8101 67.8922 15.4351C64.8212 11.7697 60.9223 8.63851 56.429 6.22558C56.0858 6.0416 55.6577 6.10883 55.3853 6.38125C51.5359 10.2306 47.913 15.0105 42.8147 17.2607C42.4255 17.434 41.9797 17.1439 41.9797 16.7194V2.19931C41.9797 1.75706 41.6613 1.37849 41.2226 1.31834C39.0502 1.01407 36.8177 0.858398 34.5392 0.858398C32.2607 0.858398 30.0282 1.01407 27.8559 1.31834C27.4172 1.38203 27.0988 1.76059 27.0988 2.19931V16.7194C27.0988 17.1439 26.653 17.434 26.2638 17.2607C21.1655 15.0105 17.5426 10.2306 13.6932 6.38125C13.4172 6.10529 12.9927 6.0416 12.6495 6.22558C8.15264 8.63851 4.25374 11.7697 1.18274 15.4351C0.864314 15.8101 0.903232 16.3726 1.2818 16.6875C9.82613 23.8131 21.5724 28.2073 34.5357 28.2073H34.5392Z" fill="#FFFFFF"/>
-    </svg>
-    <div>
-      <span class="ph-title">TWIN Project Audit</span>
-      <span class="ph-sub">Generated 2026-06-24 &middot; next branch &middot; 34 submodules &middot; 195 @twin.org packages</span>
-    </div>
-  </div>
-  <div class="stats-strip" style="display:grid;grid-template-columns:repeat(7,1fr)">
-    <div class="stat-cell"><span class="stat-number">34</span><span class="stat-label">Submodules</span></div>
-    <div class="stat-cell"><span class="stat-number">195</span><span class="stat-label">@twin.org packages</span></div>
-    <div class="stat-cell"><span class="stat-number">322,004</span><span class="stat-label">Source lines</span></div>
-    <div class="stat-cell"><span class="stat-number">132,505</span><span class="stat-label">Spec lines</span></div>
-    <div class="stat-cell"><span class="stat-number">52</span><span class="stat-label">Prod dependencies</span></div>
-    <div class="stat-cell"><span class="stat-number">37</span><span class="stat-label">Dev dependencies</span></div>
-    <div class="stat-cell"><span class="stat-number accent">41.2%</span><span class="stat-label">Spec / source</span></div>
-  </div>
-  <div id="print-content" style="padding:20px 36px"></div>
-</div>
+			/* Explorer */
+			.explorer {
+				background: #fff;
+				margin: 16px 24px 24px;
+				border-radius: 10px;
+				box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+				overflow: hidden;
+			}
+			.tab-bar {
+				display: flex;
+				border-bottom: 2px solid #eef0f5;
+				overflow-x: auto;
+			}
+			.tab-btn {
+				padding: 12px 20px;
+				border: none;
+				background: none;
+				font-size: 13px;
+				font-weight: 600;
+				color: #667;
+				cursor: pointer;
+				white-space: nowrap;
+				border-bottom: 2px solid transparent;
+				margin-bottom: -2px;
+				transition:
+					color 0.15s,
+					border-color 0.15s;
+			}
+			.tab-btn:hover {
+				color: #11224e;
+			}
+			.tab-btn.active {
+				color: #ff7200;
+				border-bottom-color: #ff7200;
+			}
+			.tab-count {
+				display: inline-block;
+				background: #eef0f5;
+				color: #667;
+				border-radius: 10px;
+				font-size: 11px;
+				padding: 1px 7px;
+				margin-left: 6px;
+			}
+			.tab-btn.active .tab-count {
+				background: #ff7200;
+				color: #fff;
+			}
+			.search-bar {
+				padding: 12px 20px;
+				border-bottom: 1px solid #eef0f5;
+			}
+			.search-bar input {
+				width: 100%;
+				padding: 8px 12px;
+				border: 1px solid #dde;
+				border-radius: 6px;
+				font-size: 13px;
+				font-family: inherit;
+				outline: none;
+			}
+			.search-bar input:focus {
+				border-color: #ff7200;
+				box-shadow: 0 0 0 3px rgba(255, 114, 0, 0.12);
+			}
+			table {
+				width: 100%;
+				border-collapse: collapse;
+			}
+			th {
+				background: #f8f9fc;
+				padding: 10px 16px;
+				text-align: left;
+				font-size: 11px;
+				font-weight: 700;
+				letter-spacing: 0.06em;
+				text-transform: uppercase;
+				color: #667;
+				border-bottom: 2px solid #eef0f5;
+				position: sticky;
+				top: 0;
+				z-index: 1;
+			}
+			td {
+				padding: 9px 16px;
+				border-bottom: 1px solid #f0f1f5;
+				vertical-align: top;
+			}
+			tr:hover td {
+				background: #fafbff;
+			}
+			tr:last-child td {
+				border-bottom: none;
+			}
+			.pkg-name {
+				font-family: monospace;
+				font-size: 12px;
+				color: #11224e;
+				font-weight: 600;
+			}
+			.sub-badge {
+				display: inline-block;
+				background: #eef0f5;
+				color: #11224e;
+				border-radius: 4px;
+				font-size: 11px;
+				padding: 2px 7px;
+				font-weight: 500;
+			}
+			.num {
+				text-align: right;
+				font-variant-numeric: tabular-nums;
+				font-family: monospace;
+				font-size: 12px;
+			}
+			.ratio {
+				color: #ff7200;
+				font-weight: 600;
+				font-size: 12px;
+				font-family: monospace;
+			}
+			.version {
+				font-family: monospace;
+				font-size: 12px;
+				color: #667;
+			}
+			.no-results {
+				padding: 32px;
+				text-align: center;
+				color: #999;
+				font-size: 14px;
+			}
+			.tab-panel {
+				display: none;
+				max-height: 520px;
+				overflow-y: auto;
+			}
+			.tab-panel.active {
+				display: block;
+			}
 
-<script>
-const PACKAGES = [
-["@twin.org/cli-core","0.9.1-next.0","twin-framework",1247,129],
-["@twin.org/context","0.9.1-next.0","twin-framework",821,498],
-["@twin.org/core","0.9.1-next.0","twin-framework",13918,6224],
-["@twin.org/crypto","0.9.1-next.0","twin-framework",3923,1606],
-["@twin.org/crypto-cli","0.9.1-next.0","twin-framework",398,57],
-["@twin.org/entity","0.9.1-next.0","twin-framework",3800,2626],
-["@twin.org/image","0.9.1-next.0","twin-framework",2315,30],
-["@twin.org/merge-locales","0.9.1-next.0","twin-framework",330,5],
-["@twin.org/modules","0.9.1-next.0","twin-framework",690,354],
-["@twin.org/nameof","0.9.1-next.0","twin-framework",64,10],
-["@twin.org/nameof-transformer","0.9.1-next.0","twin-framework",365,88],
-["@twin.org/nameof-vitest-plugin","0.9.1-next.0","twin-framework",72,25],
-["@twin.org/qr","0.9.1-next.0","twin-framework",2221,5],
-["@twin.org/validate-locales","0.9.1-next.0","twin-framework",1419,129],
-["@twin.org/web","0.9.1-next.0","twin-framework",4415,1656],
-["@twin.org/tools-core","0.9.1-next.0","twin-tools",12288,1514],
-["@twin.org/tools-models","0.9.1-next.0","twin-tools",1612,5],
-["@twin.org/ts-to-jsonld-context","0.9.1-next.0","twin-tools",810,157],
-["@twin.org/ts-to-openapi","0.9.1-next.0","twin-tools",2040,156],
-["@twin.org/ts-to-schema","0.9.1-next.0","twin-tools",856,110],
-["@twin.org/data-core","0.9.1-next.0","twin-data",1822,1207],
-["@twin.org/data-framework","0.9.1-next.0","twin-data",132,5],
-["@twin.org/data-json-ld","0.9.1-next.0","twin-data",3988,1993],
-["@twin.org/data-json-path","0.9.1-next.0","twin-data",624,341],
-["@twin.org/standards-dataspace-protocol","0.9.1-next.0","twin-standards",2255,488],
-["@twin.org/standards-dcsa","0.9.1-next.0","twin-standards",2899,5],
-["@twin.org/standards-dublin-core","0.9.1-next.0","twin-standards",236,23],
-["@twin.org/standards-foaf","0.9.1-next.0","twin-standards",440,5],
-["@twin.org/standards-gs1","0.9.1-next.0","twin-standards",3219,70],
-["@twin.org/standards-ld-contexts","0.9.1-next.0","twin-standards",179,41],
-["@twin.org/standards-schema-org","0.9.1-next.0","twin-standards",430,94],
-["@twin.org/standards-unece","0.9.1-next.0","twin-standards",108316,446],
-["@twin.org/standards-vda","0.9.1-next.0","twin-standards",602,94],
-["@twin.org/standards-w3c-activity-streams","0.9.1-next.0","twin-standards",4131,2334],
-["@twin.org/standards-w3c-dcat","0.9.1-next.0","twin-standards",1531,538],
-["@twin.org/standards-w3c-did","0.9.1-next.0","twin-standards",3848,1902],
-["@twin.org/standards-w3c-odrl","0.9.1-next.0","twin-standards",3054,1604],
-["@twin.org/standards-w3c-vcard","0.9.1-next.0","twin-standards",130,21],
-["@twin.org/api-auth-entity-storage-models","0.9.0-next.1","twin-api",728,5],
-["@twin.org/api-auth-entity-storage-rest-client","0.9.0-next.1","twin-api",467,5],
-["@twin.org/api-auth-entity-storage-service","0.9.0-next.1","twin-api",6589,3348],
-["@twin.org/api-core","0.9.0-next.1","twin-api",700,245],
-["@twin.org/api-models","0.9.0-next.1","twin-api",2212,404],
-["@twin.org/api-processors","0.9.0-next.1","twin-api",1103,124],
-["@twin.org/api-rest-client","0.9.0-next.1","twin-api",166,5],
-["@twin.org/api-server-fastify","0.9.0-next.1","twin-api",1581,599],
-["@twin.org/api-service","0.9.0-next.1","twin-api",1497,401],
-["@twin.org/api-tenant-processor","0.9.0-next.1","twin-api",2504,930],
-["@twin.org/logging-connector-console","0.9.0-next.1","twin-logging",222,9],
-["@twin.org/logging-connector-entity-storage","0.9.0-next.1","twin-logging",804,265],
-["@twin.org/logging-models","0.9.0-next.1","twin-logging",514,9],
-["@twin.org/logging-rest-client","0.9.0-next.1","twin-logging",122,9],
-["@twin.org/logging-service","0.9.0-next.1","twin-logging",376,11],
-["@twin.org/event-bus-connector-local","0.9.0-next.1","twin-event-bus",456,270],
-["@twin.org/event-bus-models","0.9.0-next.1","twin-event-bus",203,9],
-["@twin.org/event-bus-service","0.9.0-next.1","twin-event-bus",260,28],
-["@twin.org/event-bus-socket-client","0.9.0-next.1","twin-event-bus",358,79],
-["@twin.org/entity-storage-connector-cosmosdb","0.9.0-next.1","twin-entity-storage",4128,2785],
-["@twin.org/entity-storage-connector-dynamodb","0.9.0-next.1","twin-entity-storage",4868,2814],
-["@twin.org/entity-storage-connector-file","0.9.0-next.1","twin-entity-storage",3840,2908],
-["@twin.org/entity-storage-connector-gcp-firestore","0.9.0-next.1","twin-entity-storage",3949,2748],
-["@twin.org/entity-storage-connector-memory","0.9.0-next.1","twin-entity-storage",3700,2944],
-["@twin.org/entity-storage-connector-mongodb","0.9.0-next.1","twin-entity-storage",3684,2764],
-["@twin.org/entity-storage-connector-mysql","0.9.0-next.1","twin-entity-storage",4227,2803],
-["@twin.org/entity-storage-connector-postgresql","0.9.0-next.1","twin-entity-storage",4206,2803],
-["@twin.org/entity-storage-connector-scylladb","0.9.0-next.1","twin-entity-storage",4759,2762],
-["@twin.org/entity-storage-models","0.9.0-next.1","twin-entity-storage",2017,958],
-["@twin.org/entity-storage-rest-client","0.9.0-next.1","twin-entity-storage",241,9],
-["@twin.org/entity-storage-service","0.9.0-next.1","twin-entity-storage",1742,492],
-["@twin.org/vault-connector-entity-storage","0.9.0-next.1","twin-vault",1289,685],
-["@twin.org/vault-connector-hashicorp","0.9.0-next.1","twin-vault",2589,765],
-["@twin.org/vault-models","0.9.0-next.1","twin-vault",304,9],
-["@twin.org/blob-storage-connector-aws-s3","0.9.0-next.1","twin-blob-storage",722,219],
-["@twin.org/blob-storage-connector-azure","0.9.0-next.1","twin-blob-storage",643,213],
-["@twin.org/blob-storage-connector-file","0.9.0-next.1","twin-blob-storage",599,229],
-["@twin.org/blob-storage-connector-gcp","0.9.0-next.1","twin-blob-storage",625,212],
-["@twin.org/blob-storage-connector-ipfs","0.9.0-next.1","twin-blob-storage",643,208],
-["@twin.org/blob-storage-connector-memory","0.9.0-next.1","twin-blob-storage",413,197],
-["@twin.org/blob-storage-models","0.9.0-next.1","twin-blob-storage",740,55],
-["@twin.org/blob-storage-rest-client","0.9.0-next.1","twin-blob-storage",267,5],
-["@twin.org/blob-storage-service","0.9.0-next.1","twin-blob-storage",1981,631],
-["@twin.org/telemetry-connector-entity-storage","0.9.0-next.1","twin-telemetry",1064,446],
-["@twin.org/telemetry-connector-opentelemetry","0.9.0-next.1","twin-telemetry",1039,411],
-["@twin.org/telemetry-models","0.9.0-next.1","twin-telemetry",1256,138],
-["@twin.org/telemetry-producers","0.9.0-next.1","twin-telemetry",506,204],
-["@twin.org/telemetry-rest-client","0.9.0-next.1","twin-telemetry",263,9],
-["@twin.org/telemetry-service","0.9.0-next.1","twin-telemetry",1319,339],
-["@twin.org/automation-actions","0.9.0-next.1","twin-automation",283,104],
-["@twin.org/automation-models","0.9.0-next.1","twin-automation",275,5],
-["@twin.org/automation-rest-client","0.9.0-next.1","twin-automation",256,81],
-["@twin.org/automation-service","0.9.0-next.1","twin-automation",951,206],
-["@twin.org/background-task-models","0.9.0-next.1","twin-background-task",309,5],
-["@twin.org/background-task-scheduler","0.9.0-next.1","twin-background-task",818,411],
-["@twin.org/background-task-service","0.9.0-next.1","twin-background-task",2879,1275],
-["@twin.org/data-processing-converters","0.9.0-next.1","twin-data-processing",263,124],
-["@twin.org/data-processing-extractors","0.9.0-next.1","twin-data-processing",296,173],
-["@twin.org/data-processing-models","0.9.0-next.1","twin-data-processing",441,5],
-["@twin.org/data-processing-rest-client","0.9.0-next.1","twin-data-processing",225,9],
-["@twin.org/data-processing-service","0.9.0-next.1","twin-data-processing",947,125],
-["@twin.org/messaging-connector-aws","0.9.0-next.1","twin-messaging",1318,401],
-["@twin.org/messaging-connector-entity-storage","0.9.0-next.1","twin-messaging",998,341],
-["@twin.org/messaging-models","0.9.0-next.1","twin-messaging",248,32],
-["@twin.org/messaging-service","0.9.0-next.1","twin-messaging",987,531],
-["@twin.org/trust-generators","0.9.0-next.1","twin-trust",293,133],
-["@twin.org/trust-models","0.9.0-next.1","twin-trust",280,91],
-["@twin.org/trust-service","0.9.0-next.1","twin-trust",413,216],
-["@twin.org/trust-verifiers","0.9.0-next.1","twin-trust",533,273],
-["@twin.org/rights-management-models","0.9.0-next.1","twin-rights-management",2521,413],
-["@twin.org/rights-management-pap-service","0.9.0-next.1","twin-rights-management",1829,989],
-["@twin.org/rights-management-pdp-service","0.9.0-next.1","twin-rights-management",335,140],
-["@twin.org/rights-management-pep-service","0.9.0-next.1","twin-rights-management",812,550],
-["@twin.org/rights-management-pip-service","0.9.0-next.1","twin-rights-management",380,244],
-["@twin.org/rights-management-plugins","0.9.0-next.1","twin-rights-management",9833,6046],
-["@twin.org/rights-management-pmp-service","0.9.0-next.1","twin-rights-management",449,286],
-["@twin.org/rights-management-pnp-service","0.9.0-next.1","twin-rights-management",4817,2426],
-["@twin.org/rights-management-pxp-service","0.9.0-next.1","twin-rights-management",659,485],
-["@twin.org/rights-management-rest-client","0.9.0-next.1","twin-rights-management",916,52],
-["@twin.org/rights-management-service","0.9.0-next.1","twin-rights-management",2224,310],
-["@twin.org/dlt-iota","0.9.0-next.1","twin-dlt",4234,1555],
-["@twin.org/move-to-json","0.9.0-next.1","twin-dlt",4375,1241],
-["@twin.org/wallet-cli","0.9.0-next.1","twin-wallet",505,61],
-["@twin.org/wallet-connector-entity-storage","0.9.0-next.1","twin-wallet",733,232],
-["@twin.org/wallet-connector-iota","0.9.0-next.1","twin-wallet",1015,532],
-["@twin.org/wallet-models","0.9.0-next.1","twin-wallet",143,18],
-["@twin.org/identity-cli","0.9.0-next.1","twin-identity",4088,1127],
-["@twin.org/identity-connector-entity-storage","0.9.0-next.1","twin-identity",3860,1619],
-["@twin.org/identity-connector-iota","0.9.0-next.1","twin-identity",4117,1913],
-["@twin.org/identity-connector-universal","0.9.0-next.1","twin-identity",236,38],
-["@twin.org/identity-models","0.9.0-next.1","twin-identity",2315,312],
-["@twin.org/identity-rest-client","0.9.0-next.1","twin-identity",864,9],
-["@twin.org/identity-service","0.9.0-next.1","twin-identity",4255,779],
-["@twin.org/nft-cli","0.9.0-next.1","twin-nft",722,27],
-["@twin.org/nft-connector-entity-storage","0.9.0-next.1","twin-nft",491,89],
-["@twin.org/nft-connector-iota","0.9.0-next.1","twin-nft",1986,706],
-["@twin.org/nft-models","0.9.0-next.1","twin-nft",382,5],
-["@twin.org/nft-rest-client","0.9.0-next.1","twin-nft",181,9],
-["@twin.org/nft-service","0.9.0-next.1","twin-nft",648,15],
-["@twin.org/notarization-connector-entity-storage","0.9.0-next.1","twin-notarization",1082,490],
-["@twin.org/notarization-connector-iota","0.9.0-next.1","twin-notarization",1085,343],
-["@twin.org/notarization-models","0.9.0-next.1","twin-notarization",338,5],
-["@twin.org/notarization-rest-client","0.9.0-next.1","twin-notarization",289,135],
-["@twin.org/notarization-service","0.9.0-next.1","twin-notarization",1207,546],
-["@twin.org/hierarchies-connector-entity-storage","0.9.0-next.1","twin-hierarchies",1573,283],
-["@twin.org/hierarchies-connector-iota","0.9.0-next.1","twin-hierarchies",1962,523],
-["@twin.org/hierarchies-models","0.9.0-next.1","twin-hierarchies",1149,5],
-["@twin.org/hierarchies-rest-client","0.9.0-next.1","twin-hierarchies",477,9],
-["@twin.org/hierarchies-service","0.9.0-next.1","twin-hierarchies",813,15],
-["@twin.org/verifiable-storage-connector-entity-storage","0.9.0-next.1","twin-verifiable-storage",677,138],
-["@twin.org/verifiable-storage-connector-iota","0.9.0-next.1","twin-verifiable-storage",2003,659],
-["@twin.org/verifiable-storage-models","0.9.0-next.1","twin-verifiable-storage",374,5],
-["@twin.org/verifiable-storage-rest-client","0.9.0-next.1","twin-verifiable-storage",179,9],
-["@twin.org/verifiable-storage-service","0.9.0-next.1","twin-verifiable-storage",600,15],
-["@twin.org/immutable-proof-models","0.9.0-next.1","twin-immutable-proof",506,41],
-["@twin.org/immutable-proof-rest-client","0.9.0-next.1","twin-immutable-proof",177,9],
-["@twin.org/immutable-proof-service","0.9.0-next.1","twin-immutable-proof",1795,592],
-["@twin.org/immutable-proof-task","0.9.0-next.1","twin-immutable-proof",346,90],
-["@twin.org/attestation-cli","0.9.0-next.1","twin-attestation",636,29],
-["@twin.org/attestation-connector-nft","0.9.0-next.1","twin-attestation",679,114],
-["@twin.org/attestation-connector-open-attestation","0.9.0-next.1","twin-attestation",133,9],
-["@twin.org/attestation-models","0.9.0-next.1","twin-attestation",421,12],
-["@twin.org/attestation-rest-client","0.9.0-next.1","twin-attestation",147,9],
-["@twin.org/attestation-service","0.9.0-next.1","twin-attestation",676,17],
-["@twin.org/auditable-item-graph-models","0.9.0-next.1","twin-auditable-item-graph",1541,44],
-["@twin.org/auditable-item-graph-rest-client","0.9.0-next.1","twin-auditable-item-graph",434,39],
-["@twin.org/auditable-item-graph-service","0.9.0-next.1","twin-auditable-item-graph",8080,4290],
-["@twin.org/auditable-item-stream-models","0.9.0-next.1","twin-auditable-item-stream",1621,55],
-["@twin.org/auditable-item-stream-rest-client","0.9.0-next.1","twin-auditable-item-stream",651,124],
-["@twin.org/auditable-item-stream-service","0.9.0-next.1","twin-auditable-item-stream",6701,3049],
-["@twin.org/document-management-models","0.9.0-next.1","twin-document-management",933,5],
-["@twin.org/document-management-rest-client","0.9.0-next.1","twin-document-management",360,9],
-["@twin.org/document-management-service","0.9.0-next.1","twin-document-management",5094,2949],
-["@twin.org/entity-storage-connector-synchronised","0.9.0-next.1","twin-synchronised-storage",1054,422],
-["@twin.org/synchronised-storage-models","0.9.0-next.1","twin-synchronised-storage",547,5],
-["@twin.org/synchronised-storage-rest-client","0.9.0-next.1","twin-synchronised-storage",121,9],
-["@twin.org/synchronised-storage-service","0.9.0-next.1","twin-synchronised-storage",4087,1404],
-["@twin.org/federated-catalogue-filters","0.9.0-next.1","twin-federated-catalogue",501,300],
-["@twin.org/federated-catalogue-models","0.9.0-next.1","twin-federated-catalogue",425,5],
-["@twin.org/federated-catalogue-rest-client","0.9.0-next.1","twin-federated-catalogue",232,36],
-["@twin.org/federated-catalogue-service","0.9.0-next.1","twin-federated-catalogue",4542,3187],
-["@twin.org/dataspace-app-runner","0.9.0-next.1","twin-dataspace",479,206],
-["@twin.org/dataspace-control-plane-rest-client","0.9.0-next.1","twin-dataspace",614,70],
-["@twin.org/dataspace-control-plane-service","0.9.0-next.1","twin-dataspace",14725,8201],
-["@twin.org/dataspace-data-plane-rest-client","0.9.0-next.1","twin-dataspace",309,5],
-["@twin.org/dataspace-data-plane-service","0.9.0-next.1","twin-dataspace",7826,4607],
-["@twin.org/dataspace-data-plane-socket-client","0.9.0-next.1","twin-dataspace",406,7],
-["@twin.org/dataspace-models","0.9.0-next.1","twin-dataspace",2826,62],
-["@twin.org/dataspace-test-app","0.9.0-next.1","twin-dataspace",392,5],
-["@twin.org/engine","0.9.0-next.1","twin-engine",1557,1449],
-["@twin.org/engine-core","0.9.0-next.1","twin-engine",1038,34],
-["@twin.org/engine-models","0.9.0-next.1","twin-engine",527,11],
-["@twin.org/engine-server","0.9.0-next.1","twin-engine",1120,680],
-["@twin.org/engine-server-types","0.9.0-next.1","twin-engine",1100,5],
-["@twin.org/engine-types","0.9.0-next.1","twin-engine",7861,5],
-["@twin.org/node","0.9.0-next.1","twin-node",27,5],
-["@twin.org/node-core","0.9.0-next.1","twin-node",14591,5235]
-];
+			/* Print */
+			@media screen {
+				#print-all {
+					display: none;
+				}
+			}
+			@media print {
+				.site-header,
+				.chart-section,
+				.tab-bar,
+				.search-bar,
+				.no-print,
+				.explorer {
+					display: none !important;
+				}
+				#print-all {
+					display: block !important;
+				}
+				.print-section {
+					page-break-inside: avoid;
+					margin-bottom: 24px;
+				}
+				.print-section h2 {
+					font-size: 14px;
+					font-weight: 700;
+					color: #11224e;
+					margin-bottom: 8px;
+					border-bottom: 2px solid #ff7200;
+					padding-bottom: 4px;
+					-webkit-print-color-adjust: exact;
+					print-color-adjust: exact;
+				}
+				table {
+					width: 100%;
+					border-collapse: collapse;
+					font-size: 11px;
+				}
+				th {
+					background: #11224e;
+					color: #fff;
+					padding: 6px 10px;
+					font-size: 10px;
+					-webkit-print-color-adjust: exact;
+					print-color-adjust: exact;
+				}
+				td {
+					padding: 5px 10px;
+					border-bottom: 1px solid #e0e0e0;
+				}
+				.stat-number {
+					font-size: 18px !important;
+					letter-spacing: -0.01em;
+				}
+				.stat-cell {
+					padding: 14px 10px !important;
+				}
+				.stat-label {
+					font-size: 9px;
+					letter-spacing: 0.06em;
+				}
+				.print-obs {
+					font-size: 12px;
+					line-height: 1.7;
+					color: #333;
+				}
+				.print-obs li {
+					margin-bottom: 4px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Print header (hidden on screen) -->
+		<div class="print-header">
+			<svg width="36" height="32" viewBox="0 0 69 61" xmlns="http://www.w3.org/2000/svg">
+				<path
+					d="M34.5393 33.4719C21.5724 33.4719 9.82974 37.8661 1.28541 44.9917C0.906845 45.3066 0.867926 45.8692 1.18635 46.2442C4.25735 49.9096 8.15626 53.0407 12.6495 55.4537C12.9927 55.6376 13.4208 55.5704 13.6933 55.298C17.5426 51.4486 21.1656 46.6688 26.2639 44.4186C26.653 44.2452 27.0988 44.5353 27.0988 44.9599V59.4799C27.0988 59.9222 27.4173 60.3008 27.856 60.3609C30.0283 60.6652 32.2608 60.8209 34.5393 60.8209C36.8178 60.8209 39.0503 60.6652 41.2226 60.3609C41.6614 60.2972 41.9798 59.9187 41.9798 59.4799V44.9599C41.9798 44.5353 42.4256 44.2452 42.8147 44.4186C47.913 46.6688 51.536 51.4486 55.3854 55.298C55.6613 55.574 56.0859 55.6376 56.4291 55.4537C60.9224 53.0407 64.8213 49.9096 67.8923 46.2442C68.2107 45.8692 68.1718 45.3066 67.7932 44.9917C59.2489 37.8661 47.5026 33.4719 34.5393 33.4719Z"
+					fill="#FFFFFF"
+				/>
+				<path
+					d="M34.5392 28.2073C47.5061 28.2073 59.2488 23.8131 67.7931 16.6875C68.1717 16.3726 68.2106 15.8101 67.8922 15.4351C64.8212 11.7697 60.9223 8.63851 56.429 6.22558C56.0858 6.0416 55.6577 6.10883 55.3853 6.38125C51.5359 10.2306 47.913 15.0105 42.8147 17.2607C42.4255 17.434 41.9797 17.1439 41.9797 16.7194V2.19931C41.9797 1.75706 41.6613 1.37849 41.2226 1.31834C39.0502 1.01407 36.8177 0.858398 34.5392 0.858398C32.2607 0.858398 30.0282 1.01407 27.8559 1.31834C27.4172 1.38203 27.0988 1.76059 27.0988 2.19931V16.7194C27.0988 17.1439 26.653 17.434 26.2638 17.2607C21.1655 15.0105 17.5426 10.2306 13.6932 6.38125C13.4172 6.10529 12.9927 6.0416 12.6495 6.22558C8.15264 8.63851 4.25374 11.7697 1.18274 15.4351C0.864314 15.8101 0.903232 16.3726 1.2818 16.6875C9.82613 23.8131 21.5724 28.2073 34.5357 28.2073H34.5392Z"
+					fill="#FFFFFF"
+				/>
+			</svg>
+			<div>
+				<span class="ph-title">TWIN Core Project Audit</span>
+				<span class="ph-sub">
+					Generated 2026-06-29 &middot; next branch &middot; 34 submodules &middot; 196 @twin.org
+					packages
+				</span>
+			</div>
+		</div>
 
-const PROD_DEPS = [
-["@aws-sdk/client-dynamodb","3.1073.0","twin-entity-storage"],
-["@aws-sdk/client-s3","3.1073.0","twin-blob-storage"],
-["@aws-sdk/client-ses","3.1073.0","twin-messaging"],
-["@aws-sdk/client-sns","3.1073.0","twin-messaging"],
-["@aws-sdk/lib-dynamodb","3.1073.0","twin-entity-storage"],
-["@aws-sdk/util-dynamodb","3.996.5","twin-entity-storage"],
-["@azure/cosmos","4.9.3","twin-entity-storage"],
-["@azure/storage-blob","12.32.0","twin-blob-storage"],
-["@fastify/compress","9.0.0","twin-api"],
-["@fastify/cors","11.2.0","twin-api"],
-["@google-cloud/firestore","8.6.0","twin-entity-storage"],
-["@google-cloud/storage","7.21.0","twin-blob-storage"],
-["@govtechsg/open-attestation","6.9.7","twin-attestation"],
-["@iota/bcs","1.6.0","twin-dlt"],
-["@iota/hierarchies","0.1.12","twin-hierarchies"],
-["@iota/identity-wasm","1.9.6-beta.1","twin-dlt, twin-identity"],
-["@iota/iota-sdk","1.14.0","twin-dlt, twin-wallet, twin-identity"],
-["@iota/notarization","0.1.13","twin-notarization"],
-["@noble/ciphers","2.2.0","twin-framework"],
-["@noble/curves","2.2.0","twin-framework"],
-["@noble/hashes","2.2.0","twin-framework"],
-["@opentelemetry/api","1.9.1","twin-telemetry"],
-["@opentelemetry/sdk-metrics","2.8.0","twin-telemetry"],
-["@scure/base","2.2.0","twin-framework"],
-["@scure/bip32","2.2.0","twin-framework"],
-["@scure/bip39","2.2.0","twin-framework"],
-["@types/jsonld","1.5.15","twin-data"],
-["ajv","8.20.0","twin-data"],
-["ajv-formats","3.0.1","twin-data"],
-["cassandra-driver","4.9.0","twin-entity-storage"],
-["chalk","5.6.2","twin-framework"],
-["commander","15.0.0","twin-framework, twin-tools, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-attestation"],
-["dotenv","17.4.2","twin-framework, twin-node"],
-["fast-glob","3.3.3","twin-dlt"],
-["fastify","5.8.5","twin-api"],
-["glob","13.0.6","twin-framework, twin-tools"],
-["intl-messageformat","11.2.8","twin-framework"],
-["jose","6.2.3","twin-framework"],
-["json-p3","2.2.2","twin-data"],
-["jsonld","9.0.0","twin-data"],
-["micro-key-producer","0.9.0","twin-framework"],
-["mongodb","7.3.0","twin-entity-storage"],
-["mysql2","3.22.5","twin-entity-storage"],
-["postgres","3.4.9","twin-entity-storage"],
-["reflect-metadata","0.2.2","twin-framework"],
-["rfc6902","5.2.0","twin-framework"],
-["schema-dts","2.0.0","twin-standards, twin-node"],
-["socket.io","4.8.3","twin-api"],
-["socket.io-client","4.8.3","twin-api"],
-["tslib","2.8.1","twin-framework"],
-["typescript","6.0.3","twin-framework, twin-tools"],
-["xml2js","0.6.2","twin-data-processing"]
-];
+		<!-- Site header -->
+		<header class="site-header">
+			<svg width="28" height="25" viewBox="0 0 69 61" xmlns="http://www.w3.org/2000/svg">
+				<path
+					d="M34.5393 33.4719C21.5724 33.4719 9.82974 37.8661 1.28541 44.9917C0.906845 45.3066 0.867926 45.8692 1.18635 46.2442C4.25735 49.9096 8.15626 53.0407 12.6495 55.4537C12.9927 55.6376 13.4208 55.5704 13.6933 55.298C17.5426 51.4486 21.1656 46.6688 26.2639 44.4186C26.653 44.2452 27.0988 44.5353 27.0988 44.9599V59.4799C27.0988 59.9222 27.4173 60.3008 27.856 60.3609C30.0283 60.6652 32.2608 60.8209 34.5393 60.8209C36.8178 60.8209 39.0503 60.6652 41.2226 60.3609C41.6614 60.2972 41.9798 59.9187 41.9798 59.4799V44.9599C41.9798 44.5353 42.4256 44.2452 42.8147 44.4186C47.913 46.6688 51.536 51.4486 55.3854 55.298C55.6613 55.574 56.0859 55.6376 56.4291 55.4537C60.9224 53.0407 64.8213 49.9096 67.8923 46.2442C68.2107 45.8692 68.1718 45.3066 67.7932 44.9917C59.2489 37.8661 47.5026 33.4719 34.5393 33.4719Z"
+					fill="#FFFFFF"
+				/>
+				<path
+					d="M34.5392 28.2073C47.5061 28.2073 59.2488 23.8131 67.7931 16.6875C68.1717 16.3726 68.2106 15.8101 67.8922 15.4351C64.8212 11.7697 60.9223 8.63851 56.429 6.22558C56.0858 6.0416 55.6577 6.10883 55.3853 6.38125C51.5359 10.2306 47.913 15.0105 42.8147 17.2607C42.4255 17.434 41.9797 17.1439 41.9797 16.7194V2.19931C41.9797 1.75706 41.6613 1.37849 41.2226 1.31834C39.0502 1.01407 36.8177 0.858398 34.5392 0.858398C32.2607 0.858398 30.0282 1.01407 27.8559 1.31834C27.4172 1.38203 27.0988 1.76059 27.0988 2.19931V16.7194C27.0988 17.1439 26.653 17.434 26.2638 17.2607C21.1655 15.0105 17.5426 10.2306 13.6932 6.38125C13.4172 6.10529 12.9927 6.0416 12.6495 6.22558C8.15264 8.63851 4.25374 11.7697 1.18274 15.4351C0.864314 15.8101 0.903232 16.3726 1.2818 16.6875C9.82613 23.8131 21.5724 28.2073 34.5357 28.2073H34.5392Z"
+					fill="#FFFFFF"
+				/>
+			</svg>
+			<div class="header-text">
+				<h1>TWIN Core Project Audit</h1>
+				<p>
+					Generated 2026-06-29 &middot; next branch &middot; 34 submodules &middot; 196 @twin.org
+					packages
+				</p>
+			</div>
+			<nav class="header-nav">
+				<a href="./history.html" class="header-nav-link">History</a>
+			</nav>
+		</header>
 
-const DEV_DEPS = [
-["@commitlint/cli","21.0.2","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@commitlint/config-conventional","21.0.2","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@eslint/eslintrc","3.3.5","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@eslint/js","10.0.1","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@opentelemetry/exporter-prometheus","0.219.0","twin-telemetry"],
-["@stylistic/eslint-plugin","5.10.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@tony.ganchev/eslint-plugin-header","3.4.4","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@types/node","26.0.0","twin-framework, twin-tools, twin-standards, twin-api, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@types/xml2js","0.4.14","twin-data-processing"],
-["@typescript-eslint/eslint-plugin","8.61.1","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["@vitest/coverage-v8","4.1.9","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["concurrently","10.0.3","twin-messaging, twin-node"],
-["copyfiles","2.4.1","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["cspell","10.0.1","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["dotenv","17.4.2","twin-logging, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-messaging, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-synchronised-storage, twin-dataspace"],
-["eslint","10.5.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-config-prettier","10.1.8","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-plugin-import-x","4.16.2","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-plugin-jsdoc","63.0.7","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-plugin-prettier","5.5.6","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-plugin-promise","7.3.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-plugin-simple-import-sort","13.0.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-plugin-unicorn","68.0.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["eslint-plugin-unused-imports","4.4.1","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["globals","17.6.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["husky","9.1.7","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["markdownlint-cli","0.49.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["nodemon","3.1.14","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["prettier","3.8.4","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["release-please","17.9.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["rimraf","6.1.3","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["socket.io-client","4.8.3","twin-api"],
-["ts-patch","4.0.1","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["typedoc","0.28.19","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["typedoc-plugin-markdown","4.12.0","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["typescript","6.0.3","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"],
-["vitest","4.1.9","twin-framework, twin-tools, twin-data, twin-standards, twin-api, twin-logging, twin-event-bus, twin-entity-storage, twin-vault, twin-blob-storage, twin-telemetry, twin-automation, twin-background-task, twin-data-processing, twin-messaging, twin-trust, twin-rights-management, twin-dlt, twin-wallet, twin-identity, twin-nft, twin-notarization, twin-hierarchies, twin-verifiable-storage, twin-immutable-proof, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-document-management, twin-synchronised-storage, twin-federated-catalogue, twin-dataspace, twin-engine, twin-node"]
-];
+		<!-- Stats strip -->
+		<div class="stats-strip">
+			<div class="stat-cell">
+				<span class="stat-number">34</span>
+				<span class="stat-label">Submodules</span>
+			</div>
+			<div class="stat-cell">
+				<span class="stat-number">196</span>
+				<span class="stat-label">@twin.org packages</span>
+			</div>
+			<div class="stat-cell">
+				<span class="stat-number">322,785</span>
+				<span class="stat-label">Source lines</span>
+			</div>
+			<div class="stat-cell">
+				<span class="stat-number">133,440</span>
+				<span class="stat-label">Spec lines</span>
+			</div>
+			<div class="stat-cell">
+				<span class="stat-number">58</span>
+				<span class="stat-label">Prod dependencies</span>
+			</div>
+			<div class="stat-cell">
+				<span class="stat-number">36</span>
+				<span class="stat-label">Dev dependencies</span>
+			</div>
+			<div class="stat-cell accent">
+				<span class="stat-number">41.3%</span>
+				<span class="stat-label">Spec / source</span>
+			</div>
+		</div>
 
-const SUBMODULES = [
-["twin-framework",15,35998,17,32,13442],
-["twin-tools",5,17606,3,32,1942],
-["twin-data",4,6566,5,31,3546],
-["twin-standards",14,131270,1,32,7665],
-["twin-api",10,17547,5,33,6066],
-["twin-logging",5,2038,0,32,303],
-["twin-event-bus",4,1277,0,31,386],
-["twin-entity-storage",12,41361,9,33,26790],
-["twin-vault",3,4182,0,33,1459],
-["twin-blob-storage",9,6633,3,33,1969],
-["twin-telemetry",6,5447,2,34,1547],
-["twin-automation",4,1765,0,32,396],
-["twin-background-task",3,4006,0,32,1691],
-["twin-data-processing",5,2172,1,33,436],
-["twin-messaging",4,3551,2,34,1305],
-["twin-trust",4,1519,0,31,713],
-["twin-rights-management",11,24775,0,33,11941],
-["twin-dlt",2,8609,5,33,2796],
-["twin-wallet",4,2396,2,33,843],
-["twin-identity",7,19735,3,33,5797],
-["twin-nft",6,4410,1,33,851],
-["twin-notarization",5,4001,1,33,1519],
-["twin-hierarchies",5,5974,1,33,835],
-["twin-verifiable-storage",5,3833,0,33,826],
-["twin-immutable-proof",4,2824,0,33,732],
-["twin-attestation",6,2692,2,33,190],
-["twin-auditable-item-graph",3,10055,0,32,4373],
-["twin-auditable-item-stream",3,8973,0,32,3228],
-["twin-document-management",3,6387,0,32,2963],
-["twin-synchronised-storage",4,5809,0,33,1840],
-["twin-federated-catalogue",4,5700,0,32,3528],
-["twin-dataspace",8,27577,0,33,13163],
-["twin-engine",6,13203,0,32,2184],
-["twin-node",2,14618,2,33,5240]
-];
+		<!-- Bar chart -->
+		<div class="chart-section no-print">
+			<h2>TypeScript Lines by Submodule</h2>
+			<canvas id="barChart"></canvas>
+			<div class="chart-legend">
+				<div class="legend-item">
+					<div class="legend-swatch" style="background: #11224e"></div>
+					Source
+				</div>
+				<div class="legend-item">
+					<div class="legend-swatch" style="background: #ff7200"></div>
+					Spec
+				</div>
+			</div>
+		</div>
 
-const TABS = {
-  packages:   { label: 'Packages',        count: 195 },
-  submodules: { label: 'Submodules',      count: 34 },
-  prod:       { label: 'Production deps', count: 52 },
-  dev:        { label: 'Dev deps',        count: 37 }
-};
+		<!-- Interactive explorer -->
+		<div class="explorer no-print">
+			<div class="tab-bar">
+				<button class="tab-btn active" onclick="switchTab('packages')">
+					&#128230; Packages
+					<span class="tab-count">196</span>
+				</button>
+				<button class="tab-btn" onclick="switchTab('submodules')">
+					&#128190; Submodules
+					<span class="tab-count">34</span>
+				</button>
+				<button class="tab-btn" onclick="switchTab('prod')">
+					&#128274; Production deps
+					<span class="tab-count">58</span>
+				</button>
+				<button class="tab-btn" onclick="switchTab('dev')">
+					&#128295; Dev deps
+					<span class="tab-count">36</span>
+				</button>
+			</div>
+			<div class="search-bar">
+				<input type="search" id="searchInput" placeholder="Filter..." oninput="renderActive()" />
+			</div>
+			<div id="tab-packages" class="tab-panel active"></div>
+			<div id="tab-submodules" class="tab-panel"></div>
+			<div id="tab-prod" class="tab-panel"></div>
+			<div id="tab-dev" class="tab-panel"></div>
+		</div>
 
-let currentTab = 'packages';
+		<!-- Print-only content -->
+		<div id="print-all">
+			<div class="stats-strip print-section" style="margin-bottom: 16px">
+				<!-- replicated by renderPrintAll -->
+			</div>
+			<div id="print-obs" class="print-section"></div>
+			<div id="print-packages" class="print-section"></div>
+			<div id="print-prod" class="print-section"></div>
+			<div id="print-dev" class="print-section"></div>
+		</div>
 
-function switchTab(tab) {
-  currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach((b,i) => {
-    const tabs = ['packages','submodules','prod','dev'];
-    b.classList.toggle('active', tabs[i] === tab);
-  });
-  document.getElementById('searchInput').value = '';
-  renderBody();
-}
+		<script>
+			const PACKAGES = [
+				['@twin.org/cli-core', '0.9.1-next.4', 'twin-framework', 1247, 129],
+				['@twin.org/context', '0.9.1-next.4', 'twin-framework', 853, 532],
+				['@twin.org/core', '0.9.1-next.4', 'twin-framework', 13950, 6258],
+				['@twin.org/crypto', '0.9.1-next.4', 'twin-framework', 3923, 1606],
+				['@twin.org/crypto-cli', '0.9.1-next.4', 'twin-framework', 398, 57],
+				['@twin.org/entity', '0.9.1-next.4', 'twin-framework', 3920, 2746],
+				['@twin.org/image', '0.9.1-next.4', 'twin-framework', 2315, 30],
+				['@twin.org/merge-locales', '0.9.1-next.4', 'twin-framework', 330, 5],
+				['@twin.org/modules', '0.9.1-next.4', 'twin-framework', 690, 354],
+				['@twin.org/nameof', '0.9.1-next.4', 'twin-framework', 64, 10],
+				['@twin.org/nameof-transformer', '0.9.1-next.4', 'twin-framework', 365, 88],
+				['@twin.org/nameof-vitest-plugin', '0.9.1-next.4', 'twin-framework', 72, 25],
+				['@twin.org/qr', '0.9.1-next.4', 'twin-framework', 2221, 5],
+				['@twin.org/validate-locales', '0.9.1-next.4', 'twin-framework', 1419, 129],
+				['@twin.org/web', '0.9.1-next.4', 'twin-framework', 4415, 1656],
+				['@twin.org/tools-core', '0.9.1-next.3', 'twin-tools', 12288, 1514],
+				['@twin.org/tools-models', '0.9.1-next.3', 'twin-tools', 1612, 5],
+				['@twin.org/ts-to-jsonld-context', '0.9.1-next.3', 'twin-tools', 810, 157],
+				['@twin.org/ts-to-openapi', '0.9.1-next.3', 'twin-tools', 2040, 156],
+				['@twin.org/ts-to-schema', '0.9.1-next.3', 'twin-tools', 856, 110],
+				['@twin.org/data-core', '0.9.1-next.1', 'twin-data', 1836, 1221],
+				['@twin.org/data-framework', '0.9.1-next.1', 'twin-data', 132, 5],
+				['@twin.org/data-json-ld', '0.9.1-next.1', 'twin-data', 3978, 1993],
+				['@twin.org/data-json-path', '0.9.1-next.1', 'twin-data', 624, 341],
+				['@twin.org/standards-dataspace-protocol', '0.9.1-next.2', 'twin-standards', 2431, 488],
+				['@twin.org/standards-dcsa', '0.9.1-next.2', 'twin-standards', 2899, 5],
+				['@twin.org/standards-dublin-core', '0.9.1-next.2', 'twin-standards', 236, 23],
+				['@twin.org/standards-foaf', '0.9.1-next.2', 'twin-standards', 440, 5],
+				['@twin.org/standards-gs1', '0.9.1-next.2', 'twin-standards', 3219, 70],
+				['@twin.org/standards-ld-contexts', '0.9.1-next.2', 'twin-standards', 179, 41],
+				['@twin.org/standards-schema-org', '0.9.1-next.2', 'twin-standards', 430, 94],
+				['@twin.org/standards-unece', '0.9.1-next.2', 'twin-standards', 108316, 446],
+				['@twin.org/standards-vda', '0.9.1-next.2', 'twin-standards', 602, 94],
+				['@twin.org/standards-w3c-activity-streams', '0.9.1-next.2', 'twin-standards', 4131, 2334],
+				['@twin.org/standards-w3c-dcat', '0.9.1-next.2', 'twin-standards', 1531, 538],
+				['@twin.org/standards-w3c-did', '0.9.1-next.2', 'twin-standards', 3848, 1902],
+				['@twin.org/standards-w3c-odrl', '0.9.1-next.2', 'twin-standards', 3054, 1604],
+				['@twin.org/standards-w3c-vcard', '0.9.1-next.2', 'twin-standards', 130, 21],
+				['@twin.org/api-auth-entity-storage-models', '0.9.1-next.2', 'twin-api', 728, 5],
+				['@twin.org/api-auth-entity-storage-rest-client', '0.9.1-next.2', 'twin-api', 467, 5],
+				['@twin.org/api-auth-entity-storage-service', '0.9.1-next.2', 'twin-api', 6589, 3348],
+				['@twin.org/api-core', '0.9.1-next.2', 'twin-api', 774, 301],
+				['@twin.org/api-models', '0.9.1-next.2', 'twin-api', 2212, 404],
+				['@twin.org/api-processors', '0.9.1-next.2', 'twin-api', 1103, 124],
+				['@twin.org/api-rest-client', '0.9.1-next.2', 'twin-api', 166, 5],
+				['@twin.org/api-server-fastify', '0.9.1-next.2', 'twin-api', 1581, 599],
+				['@twin.org/api-service', '0.9.1-next.2', 'twin-api', 1497, 401],
+				['@twin.org/api-tenant-processor', '0.9.1-next.2', 'twin-api', 2504, 930],
+				['@twin.org/logging-connector-console', '0.9.1-next.2', 'twin-logging', 222, 9],
+				['@twin.org/logging-connector-entity-storage', '0.9.1-next.2', 'twin-logging', 804, 265],
+				['@twin.org/logging-connector-opentelemetry', '0.9.1-next.2', 'twin-logging', 661, 267],
+				['@twin.org/logging-models', '0.9.1-next.2', 'twin-logging', 514, 9],
+				['@twin.org/logging-rest-client', '0.9.1-next.2', 'twin-logging', 122, 9],
+				['@twin.org/logging-service', '0.9.1-next.2', 'twin-logging', 376, 11],
+				['@twin.org/event-bus-connector-local', '0.9.1-next.1', 'twin-event-bus', 456, 270],
+				['@twin.org/event-bus-models', '0.9.1-next.1', 'twin-event-bus', 203, 9],
+				['@twin.org/event-bus-service', '0.9.1-next.1', 'twin-event-bus', 260, 28],
+				['@twin.org/event-bus-socket-client', '0.9.1-next.1', 'twin-event-bus', 358, 79],
+				[
+					'@twin.org/entity-storage-connector-cosmosdb',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					4147,
+					2804
+				],
+				[
+					'@twin.org/entity-storage-connector-dynamodb',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					4887,
+					2833
+				],
+				[
+					'@twin.org/entity-storage-connector-file',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					3859,
+					2927
+				],
+				[
+					'@twin.org/entity-storage-connector-gcp-firestore',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					3968,
+					2767
+				],
+				[
+					'@twin.org/entity-storage-connector-memory',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					3719,
+					2963
+				],
+				[
+					'@twin.org/entity-storage-connector-mongodb',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					3703,
+					2783
+				],
+				[
+					'@twin.org/entity-storage-connector-mysql',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					4246,
+					2822
+				],
+				[
+					'@twin.org/entity-storage-connector-postgresql',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					4225,
+					2822
+				],
+				[
+					'@twin.org/entity-storage-connector-scylladb',
+					'0.9.1-next.3',
+					'twin-entity-storage',
+					4778,
+					2781
+				],
+				['@twin.org/entity-storage-models', '0.9.1-next.3', 'twin-entity-storage', 2017, 958],
+				['@twin.org/entity-storage-rest-client', '0.9.1-next.3', 'twin-entity-storage', 241, 9],
+				['@twin.org/entity-storage-service', '0.9.1-next.3', 'twin-entity-storage', 1742, 492],
+				['@twin.org/vault-connector-entity-storage', '0.9.1-next.1', 'twin-vault', 1289, 685],
+				['@twin.org/vault-connector-hashicorp', '0.9.1-next.1', 'twin-vault', 2589, 765],
+				['@twin.org/vault-models', '0.9.1-next.1', 'twin-vault', 304, 9],
+				['@twin.org/blob-storage-connector-aws-s3', '0.9.1-next.1', 'twin-blob-storage', 722, 219],
+				['@twin.org/blob-storage-connector-azure', '0.9.1-next.1', 'twin-blob-storage', 643, 213],
+				['@twin.org/blob-storage-connector-file', '0.9.1-next.1', 'twin-blob-storage', 599, 229],
+				['@twin.org/blob-storage-connector-gcp', '0.9.1-next.1', 'twin-blob-storage', 625, 212],
+				['@twin.org/blob-storage-connector-ipfs', '0.9.1-next.1', 'twin-blob-storage', 643, 208],
+				['@twin.org/blob-storage-connector-memory', '0.9.1-next.1', 'twin-blob-storage', 413, 197],
+				['@twin.org/blob-storage-models', '0.9.1-next.1', 'twin-blob-storage', 740, 55],
+				['@twin.org/blob-storage-rest-client', '0.9.1-next.1', 'twin-blob-storage', 267, 5],
+				['@twin.org/blob-storage-service', '0.9.1-next.1', 'twin-blob-storage', 1981, 631],
+				[
+					'@twin.org/telemetry-connector-entity-storage',
+					'0.9.1-next.1',
+					'twin-telemetry',
+					1064,
+					446
+				],
+				[
+					'@twin.org/telemetry-connector-opentelemetry',
+					'0.9.1-next.1',
+					'twin-telemetry',
+					1036,
+					411
+				],
+				['@twin.org/telemetry-models', '0.9.1-next.1', 'twin-telemetry', 1256, 138],
+				['@twin.org/telemetry-producers', '0.9.1-next.1', 'twin-telemetry', 506, 204],
+				['@twin.org/telemetry-rest-client', '0.9.1-next.1', 'twin-telemetry', 263, 9],
+				['@twin.org/telemetry-service', '0.9.1-next.1', 'twin-telemetry', 1319, 339],
+				['@twin.org/automation-actions', '0.9.1-next.1', 'twin-automation', 283, 104],
+				['@twin.org/automation-models', '0.9.1-next.1', 'twin-automation', 275, 5],
+				['@twin.org/automation-rest-client', '0.9.1-next.1', 'twin-automation', 256, 81],
+				['@twin.org/automation-service', '0.9.1-next.1', 'twin-automation', 951, 206],
+				['@twin.org/background-task-models', '0.9.1-next.2', 'twin-background-task', 309, 5],
+				['@twin.org/background-task-scheduler', '0.9.1-next.2', 'twin-background-task', 818, 411],
+				['@twin.org/background-task-service', '0.9.1-next.2', 'twin-background-task', 2879, 1275],
+				['@twin.org/data-processing-converters', '0.9.1-next.1', 'twin-data-processing', 263, 124],
+				['@twin.org/data-processing-extractors', '0.9.1-next.1', 'twin-data-processing', 296, 173],
+				['@twin.org/data-processing-models', '0.9.1-next.1', 'twin-data-processing', 441, 5],
+				['@twin.org/data-processing-rest-client', '0.9.1-next.1', 'twin-data-processing', 225, 9],
+				['@twin.org/data-processing-service', '0.9.1-next.1', 'twin-data-processing', 947, 125],
+				['@twin.org/messaging-connector-aws', '0.9.1-next.1', 'twin-messaging', 1318, 401],
+				[
+					'@twin.org/messaging-connector-entity-storage',
+					'0.9.1-next.1',
+					'twin-messaging',
+					998,
+					341
+				],
+				['@twin.org/messaging-models', '0.9.1-next.1', 'twin-messaging', 248, 32],
+				['@twin.org/messaging-service', '0.9.1-next.1', 'twin-messaging', 987, 531],
+				['@twin.org/trust-generators', '0.9.1-next.1', 'twin-trust', 293, 133],
+				['@twin.org/trust-models', '0.9.1-next.1', 'twin-trust', 280, 91],
+				['@twin.org/trust-service', '0.9.1-next.1', 'twin-trust', 413, 216],
+				['@twin.org/trust-verifiers', '0.9.1-next.1', 'twin-trust', 533, 273],
+				['@twin.org/rights-management-models', '0.9.1-next.1', 'twin-rights-management', 2521, 413],
+				[
+					'@twin.org/rights-management-pap-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					1829,
+					989
+				],
+				[
+					'@twin.org/rights-management-pdp-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					335,
+					140
+				],
+				[
+					'@twin.org/rights-management-pep-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					812,
+					550
+				],
+				[
+					'@twin.org/rights-management-pip-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					380,
+					244
+				],
+				[
+					'@twin.org/rights-management-plugins',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					9833,
+					6046
+				],
+				[
+					'@twin.org/rights-management-pmp-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					449,
+					286
+				],
+				[
+					'@twin.org/rights-management-pnp-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					4817,
+					2426
+				],
+				[
+					'@twin.org/rights-management-pxp-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					659,
+					485
+				],
+				[
+					'@twin.org/rights-management-rest-client',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					916,
+					52
+				],
+				[
+					'@twin.org/rights-management-service',
+					'0.9.1-next.1',
+					'twin-rights-management',
+					2224,
+					310
+				],
+				['@twin.org/dlt-iota', '0.9.1-next.1', 'twin-dlt', 4234, 1555],
+				['@twin.org/move-to-json', '0.9.1-next.1', 'twin-dlt', 4375, 1241],
+				['@twin.org/wallet-cli', '0.9.1-next.1', 'twin-wallet', 505, 61],
+				['@twin.org/wallet-connector-entity-storage', '0.9.1-next.1', 'twin-wallet', 733, 232],
+				['@twin.org/wallet-connector-iota', '0.9.1-next.1', 'twin-wallet', 1015, 532],
+				['@twin.org/wallet-models', '0.9.1-next.1', 'twin-wallet', 143, 18],
+				['@twin.org/identity-cli', '0.9.1-next.1', 'twin-identity', 4088, 1127],
+				[
+					'@twin.org/identity-connector-entity-storage',
+					'0.9.1-next.1',
+					'twin-identity',
+					3860,
+					1619
+				],
+				['@twin.org/identity-connector-iota', '0.9.1-next.1', 'twin-identity', 4117, 1913],
+				['@twin.org/identity-connector-universal', '0.9.1-next.1', 'twin-identity', 236, 38],
+				['@twin.org/identity-models', '0.9.1-next.1', 'twin-identity', 2315, 312],
+				['@twin.org/identity-rest-client', '0.9.1-next.1', 'twin-identity', 864, 9],
+				['@twin.org/identity-service', '0.9.1-next.1', 'twin-identity', 4255, 779],
+				['@twin.org/nft-cli', '0.9.1-next.1', 'twin-nft', 722, 27],
+				['@twin.org/nft-connector-entity-storage', '0.9.1-next.1', 'twin-nft', 491, 89],
+				['@twin.org/nft-connector-iota', '0.9.1-next.1', 'twin-nft', 1986, 706],
+				['@twin.org/nft-models', '0.9.1-next.1', 'twin-nft', 382, 5],
+				['@twin.org/nft-rest-client', '0.9.1-next.1', 'twin-nft', 181, 9],
+				['@twin.org/nft-service', '0.9.1-next.1', 'twin-nft', 648, 15],
+				[
+					'@twin.org/notarization-connector-entity-storage',
+					'0.9.1-next.1',
+					'twin-notarization',
+					1082,
+					490
+				],
+				['@twin.org/notarization-connector-iota', '0.9.1-next.1', 'twin-notarization', 1085, 343],
+				['@twin.org/notarization-models', '0.9.1-next.1', 'twin-notarization', 338, 5],
+				['@twin.org/notarization-rest-client', '0.9.1-next.1', 'twin-notarization', 289, 135],
+				['@twin.org/notarization-service', '0.9.1-next.1', 'twin-notarization', 1207, 546],
+				[
+					'@twin.org/hierarchies-connector-entity-storage',
+					'0.9.1-next.1',
+					'twin-hierarchies',
+					1573,
+					283
+				],
+				['@twin.org/hierarchies-connector-iota', '0.9.1-next.1', 'twin-hierarchies', 1962, 523],
+				['@twin.org/hierarchies-models', '0.9.1-next.1', 'twin-hierarchies', 1149, 5],
+				['@twin.org/hierarchies-rest-client', '0.9.1-next.1', 'twin-hierarchies', 477, 9],
+				['@twin.org/hierarchies-service', '0.9.1-next.1', 'twin-hierarchies', 813, 15],
+				[
+					'@twin.org/verifiable-storage-connector-entity-storage',
+					'0.9.1-next.1',
+					'twin-verifiable-storage',
+					677,
+					138
+				],
+				[
+					'@twin.org/verifiable-storage-connector-iota',
+					'0.9.1-next.1',
+					'twin-verifiable-storage',
+					2003,
+					659
+				],
+				['@twin.org/verifiable-storage-models', '0.9.1-next.1', 'twin-verifiable-storage', 374, 5],
+				[
+					'@twin.org/verifiable-storage-rest-client',
+					'0.9.1-next.1',
+					'twin-verifiable-storage',
+					179,
+					9
+				],
+				[
+					'@twin.org/verifiable-storage-service',
+					'0.9.1-next.1',
+					'twin-verifiable-storage',
+					600,
+					15
+				],
+				['@twin.org/immutable-proof-models', '0.9.1-next.2', 'twin-immutable-proof', 506, 41],
+				['@twin.org/immutable-proof-rest-client', '0.9.1-next.2', 'twin-immutable-proof', 177, 9],
+				['@twin.org/immutable-proof-service', '0.9.1-next.2', 'twin-immutable-proof', 1801, 598],
+				['@twin.org/immutable-proof-task', '0.9.1-next.2', 'twin-immutable-proof', 346, 90],
+				['@twin.org/attestation-cli', '0.9.1-next.1', 'twin-attestation', 636, 29],
+				['@twin.org/attestation-connector-nft', '0.9.1-next.1', 'twin-attestation', 679, 114],
+				[
+					'@twin.org/attestation-connector-open-attestation',
+					'0.9.1-next.1',
+					'twin-attestation',
+					133,
+					9
+				],
+				['@twin.org/attestation-models', '0.9.1-next.1', 'twin-attestation', 421, 12],
+				['@twin.org/attestation-rest-client', '0.9.1-next.1', 'twin-attestation', 147, 9],
+				['@twin.org/attestation-service', '0.9.1-next.1', 'twin-attestation', 676, 17],
+				[
+					'@twin.org/auditable-item-graph-models',
+					'0.9.1-next.1',
+					'twin-auditable-item-graph',
+					1541,
+					44
+				],
+				[
+					'@twin.org/auditable-item-graph-rest-client',
+					'0.9.1-next.1',
+					'twin-auditable-item-graph',
+					434,
+					39
+				],
+				[
+					'@twin.org/auditable-item-graph-service',
+					'0.9.1-next.1',
+					'twin-auditable-item-graph',
+					8241,
+					4436
+				],
+				[
+					'@twin.org/auditable-item-stream-models',
+					'0.9.1-next.1',
+					'twin-auditable-item-stream',
+					1621,
+					55
+				],
+				[
+					'@twin.org/auditable-item-stream-rest-client',
+					'0.9.1-next.1',
+					'twin-auditable-item-stream',
+					651,
+					124
+				],
+				[
+					'@twin.org/auditable-item-stream-service',
+					'0.9.1-next.1',
+					'twin-auditable-item-stream',
+					6701,
+					3049
+				],
+				[
+					'@twin.org/document-management-models',
+					'0.9.1-next.1',
+					'twin-document-management',
+					933,
+					5
+				],
+				[
+					'@twin.org/document-management-rest-client',
+					'0.9.1-next.1',
+					'twin-document-management',
+					360,
+					9
+				],
+				[
+					'@twin.org/document-management-service',
+					'0.9.1-next.1',
+					'twin-document-management',
+					5094,
+					2949
+				],
+				[
+					'@twin.org/entity-storage-connector-synchronised',
+					'0.9.1-next.1',
+					'twin-synchronised-storage',
+					1054,
+					422
+				],
+				[
+					'@twin.org/synchronised-storage-models',
+					'0.9.1-next.1',
+					'twin-synchronised-storage',
+					547,
+					5
+				],
+				[
+					'@twin.org/synchronised-storage-rest-client',
+					'0.9.1-next.1',
+					'twin-synchronised-storage',
+					121,
+					9
+				],
+				[
+					'@twin.org/synchronised-storage-service',
+					'0.9.1-next.1',
+					'twin-synchronised-storage',
+					4086,
+					1403
+				],
+				[
+					'@twin.org/federated-catalogue-filters',
+					'0.9.1-next.1',
+					'twin-federated-catalogue',
+					501,
+					300
+				],
+				[
+					'@twin.org/federated-catalogue-models',
+					'0.9.1-next.1',
+					'twin-federated-catalogue',
+					425,
+					5
+				],
+				[
+					'@twin.org/federated-catalogue-rest-client',
+					'0.9.1-next.1',
+					'twin-federated-catalogue',
+					232,
+					36
+				],
+				[
+					'@twin.org/federated-catalogue-service',
+					'0.9.1-next.1',
+					'twin-federated-catalogue',
+					4542,
+					3187
+				],
+				['@twin.org/dataspace-app-runner', '0.9.1-next.3', 'twin-dataspace', 479, 206],
+				[
+					'@twin.org/dataspace-control-plane-rest-client',
+					'0.9.1-next.3',
+					'twin-dataspace',
+					630,
+					70
+				],
+				[
+					'@twin.org/dataspace-control-plane-service',
+					'0.9.1-next.3',
+					'twin-dataspace',
+					14861,
+					8243
+				],
+				['@twin.org/dataspace-data-plane-rest-client', '0.9.1-next.3', 'twin-dataspace', 309, 5],
+				['@twin.org/dataspace-data-plane-service', '0.9.1-next.3', 'twin-dataspace', 7866, 4651],
+				['@twin.org/dataspace-data-plane-socket-client', '0.9.1-next.3', 'twin-dataspace', 406, 7],
+				['@twin.org/dataspace-models', '0.9.1-next.3', 'twin-dataspace', 2850, 62],
+				['@twin.org/dataspace-test-app', '0.9.1-next.3', 'twin-dataspace', 392, 5],
+				['@twin.org/engine', '0.9.1-next.2', 'twin-engine', 1557, 1449],
+				['@twin.org/engine-core', '0.9.1-next.2', 'twin-engine', 1038, 34],
+				['@twin.org/engine-models', '0.9.1-next.2', 'twin-engine', 527, 11],
+				['@twin.org/engine-server', '0.9.1-next.2', 'twin-engine', 1121, 681],
+				['@twin.org/engine-server-types', '0.9.1-next.2', 'twin-engine', 1100, 5],
+				['@twin.org/engine-types', '0.9.1-next.2', 'twin-engine', 7877, 5],
+				['@twin.org/node', '0.9.1-next.1', 'twin-node', 27, 5],
+				['@twin.org/node-core', '0.9.1-next.1', 'twin-node', 14641, 5236]
+			];
+			const PROD_DEPS = [
+				['@aws-sdk/client-dynamodb', '3.1073.0', 'twin-entity-storage'],
+				['@aws-sdk/client-s3', '3.1073.0', 'twin-blob-storage'],
+				['@aws-sdk/client-ses', '3.1073.0', 'twin-messaging'],
+				['@aws-sdk/client-sns', '3.1073.0', 'twin-messaging'],
+				['@aws-sdk/lib-dynamodb', '3.1073.0', 'twin-entity-storage'],
+				['@aws-sdk/util-dynamodb', '3.996.5', 'twin-entity-storage'],
+				['@azure/cosmos', '4.9.3', 'twin-entity-storage'],
+				['@azure/storage-blob', '12.32.0', 'twin-blob-storage'],
+				['@fastify/compress', '9.0.0', 'twin-api'],
+				['@fastify/cors', '11.2.0', 'twin-api'],
+				['@google-cloud/firestore', '8.6.0', 'twin-entity-storage'],
+				['@google-cloud/storage', '7.21.0', 'twin-blob-storage'],
+				['@govtechsg/open-attestation', '6.9.7', 'twin-attestation'],
+				['@iota/bcs', '1.6.0', 'twin-dlt'],
+				['@iota/hierarchies', '0.1.12', 'twin-hierarchies'],
+				['@iota/identity-wasm', '1.9.6-beta.1', 'twin-dlt, twin-identity'],
+				['@iota/iota-sdk', '1.14.0', 'twin-dlt, twin-identity, twin-wallet'],
+				['@iota/notarization', '0.1.13', 'twin-notarization'],
+				['@noble/ciphers', '2.2.0', 'twin-framework'],
+				['@noble/curves', '2.2.0', 'twin-framework'],
+				['@noble/hashes', '2.2.0', 'twin-framework'],
+				['@opentelemetry/api', '1.9.1', 'twin-telemetry'],
+				['@opentelemetry/api-logs', '0.219.0', 'twin-logging'],
+				['@opentelemetry/exporter-logs-otlp-http', '0.219.0', 'twin-logging'],
+				['@opentelemetry/exporter-prometheus', '0.219.0', 'twin-telemetry'],
+				['@opentelemetry/resources', '2.8.0', 'twin-logging'],
+				['@opentelemetry/sdk-logs', '0.219.0', 'twin-logging'],
+				['@opentelemetry/sdk-metrics', '2.8.0', 'twin-telemetry'],
+				['@opentelemetry/semantic-conventions', '1.41.1', 'twin-logging'],
+				['@scure/base', '2.2.0', 'twin-framework'],
+				['@scure/bip32', '2.2.0', 'twin-framework'],
+				['@scure/bip39', '2.2.0', 'twin-framework'],
+				['@types/jsonld', '1.5.15', 'twin-data'],
+				['ajv', '8.20.0', 'twin-data'],
+				['ajv-formats', '3.0.1', 'twin-data'],
+				['cassandra-driver', '4.9.0', 'twin-entity-storage'],
+				['chalk', '5.6.2', 'twin-framework'],
+				[
+					'commander',
+					'15.0.0',
+					'twin-attestation, twin-dlt, twin-framework, twin-identity, twin-nft, twin-tools, twin-wallet'
+				],
+				['dotenv', '17.4.2', 'twin-framework, twin-node'],
+				['fast-glob', '3.3.3', 'twin-dlt'],
+				['fastify', '5.8.5', 'twin-api'],
+				['glob', '13.0.6', 'twin-framework, twin-tools'],
+				['intl-messageformat', '11.2.8', 'twin-framework'],
+				['jose', '6.2.3', 'twin-framework'],
+				['json-p3', '2.2.2', 'twin-data'],
+				['jsonld', '9.0.0', 'twin-data'],
+				['micro-key-producer', '0.9.0', 'twin-framework'],
+				['mongodb', '7.3.0', 'twin-entity-storage'],
+				['mysql2', '3.22.5', 'twin-entity-storage'],
+				['postgres', '3.4.9', 'twin-entity-storage'],
+				['reflect-metadata', '0.2.2', 'twin-framework'],
+				['rfc6902', '5.2.0', 'twin-framework'],
+				['schema-dts', '2.0.0', 'twin-node, twin-standards'],
+				['socket.io', '4.8.3', 'twin-api'],
+				['socket.io-client', '4.8.3', 'twin-api'],
+				['tslib', '2.8.1', 'twin-framework'],
+				['typescript', '6.0.3', 'twin-framework, twin-tools'],
+				['xml2js', '0.6.2', 'twin-data-processing']
+			];
+			const DEV_DEPS = [
+				[
+					'@commitlint/cli',
+					'21.0.2',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'@commitlint/config-conventional',
+					'21.0.2',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'@eslint/eslintrc',
+					'3.3.5',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'@eslint/js',
+					'10.0.1',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'@stylistic/eslint-plugin',
+					'5.10.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'@tony.ganchev/eslint-plugin-header',
+					'3.4.4',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'@types/node',
+					'26.0.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				['@types/xml2js', '0.4.14', 'twin-data-processing'],
+				[
+					'@typescript-eslint/eslint-plugin',
+					'8.61.1',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'@vitest/coverage-v8',
+					'4.1.6, 4.1.9',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				['concurrently', '10.0.3', 'twin-messaging, twin-node'],
+				[
+					'copyfiles',
+					'2.4.1',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'cspell',
+					'10.0.1',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'dotenv',
+					'17.4.2',
+					'twin-attestation, twin-blob-storage, twin-dataspace, twin-dlt, twin-entity-storage, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-notarization, twin-rights-management, twin-synchronised-storage, twin-telemetry, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint',
+					'10.5.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-config-prettier',
+					'10.1.8',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-plugin-import-x',
+					'4.16.2',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-plugin-jsdoc',
+					'63.0.7',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-plugin-prettier',
+					'5.5.6',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-plugin-promise',
+					'7.3.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-plugin-simple-import-sort',
+					'13.0.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-plugin-unicorn',
+					'68.0.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'eslint-plugin-unused-imports',
+					'4.4.1',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'globals',
+					'17.6.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'husky',
+					'9.1.7',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'markdownlint-cli',
+					'0.49.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'nodemon',
+					'3.1.14',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'prettier',
+					'3.8.4',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'release-please',
+					'17.9.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'rimraf',
+					'6.1.3',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				['socket.io-client', '4.8.3', 'twin-api'],
+				[
+					'ts-patch',
+					'4.0.1',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'typedoc',
+					'0.28.19',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'typedoc-plugin-markdown',
+					'4.11.0, 4.12.0',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'typescript',
+					'6.0.3',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				],
+				[
+					'vitest',
+					'4.1.6, 4.1.9',
+					'twin-api, twin-attestation, twin-auditable-item-graph, twin-auditable-item-stream, twin-automation, twin-background-task, twin-blob-storage, twin-data, twin-data-processing, twin-dataspace, twin-dlt, twin-document-management, twin-engine, twin-entity-storage, twin-event-bus, twin-federated-catalogue, twin-framework, twin-hierarchies, twin-identity, twin-immutable-proof, twin-logging, twin-messaging, twin-nft, twin-node, twin-notarization, twin-rights-management, twin-standards, twin-synchronised-storage, twin-telemetry, twin-tools, twin-trust, twin-vault, twin-verifiable-storage, twin-wallet'
+				]
+			];
+			const SUBMODULES = [
+				['twin-framework', 15, 36182, 17, 32, 13630],
+				['twin-tools', 5, 17606, 3, 32, 1942],
+				['twin-data', 4, 6570, 5, 31, 3560],
+				['twin-standards', 14, 131446, 2, 32, 7665],
+				['twin-api', 10, 17621, 5, 33, 6122],
+				['twin-logging', 6, 2699, 5, 32, 570],
+				['twin-event-bus', 4, 1277, 0, 31, 386],
+				['twin-entity-storage', 12, 41532, 9, 33, 26961],
+				['twin-vault', 3, 4182, 0, 33, 1459],
+				['twin-blob-storage', 9, 6633, 3, 33, 1969],
+				['twin-telemetry', 6, 5444, 3, 33, 1547],
+				['twin-automation', 4, 1765, 0, 32, 396],
+				['twin-background-task', 3, 4006, 0, 32, 1691],
+				['twin-data-processing', 5, 2172, 2, 33, 436],
+				['twin-messaging', 4, 3551, 2, 34, 1305],
+				['twin-trust', 4, 1519, 0, 31, 713],
+				['twin-rights-management', 11, 24775, 0, 33, 11941],
+				['twin-dlt', 2, 8609, 5, 33, 2796],
+				['twin-wallet', 4, 2396, 2, 33, 843],
+				['twin-identity', 7, 19735, 3, 33, 5797],
+				['twin-nft', 6, 4410, 2, 33, 851],
+				['twin-notarization', 5, 4001, 2, 33, 1519],
+				['twin-hierarchies', 5, 5974, 2, 33, 835],
+				['twin-verifiable-storage', 5, 3833, 0, 33, 826],
+				['twin-immutable-proof', 4, 2830, 0, 33, 738],
+				['twin-attestation', 6, 2692, 2, 33, 190],
+				['twin-auditable-item-graph', 3, 10216, 0, 32, 4519],
+				['twin-auditable-item-stream', 3, 8973, 0, 32, 3228],
+				['twin-document-management', 3, 6387, 0, 32, 2963],
+				['twin-synchronised-storage', 4, 5808, 0, 33, 1839],
+				['twin-federated-catalogue', 4, 5700, 0, 32, 3528],
+				['twin-dataspace', 8, 27793, 0, 33, 13249],
+				['twin-engine', 6, 13220, 0, 32, 2185],
+				['twin-node', 2, 14668, 2, 33, 5241]
+			];
 
-function buildRows(data, q) {
-  return data.filter(r => {
-    if (!q) return true;
-    return r.some((v,i) => {
-      if (typeof v === 'number') return String(v).includes(q);
-      return String(v).toLowerCase().includes(q.toLowerCase());
-    });
-  });
-}
+			const TABS = {
+				packages: { label: 'Packages', count: 196 },
+				submodules: { label: 'Submodules', count: 34 },
+				prod: { label: 'Production deps', count: 58 },
+				dev: { label: 'Dev deps', count: 36 }
+			};
 
-function pct(spec, ts) {
-  const src = ts - spec;
-  if (src <= 0) return '—';
-  return (spec / src * 100).toFixed(1) + '%';
-}
+			let activeTab = 'packages';
 
-function fmtN(n) { return n.toLocaleString(); }
+			function switchTab(tab) {
+				activeTab = tab;
+				document
+					.querySelectorAll('.tab-btn')
+					.forEach((b, i) =>
+						b.classList.toggle('active', ['packages', 'submodules', 'prod', 'dev'][i] === tab)
+					);
+				document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+				document.getElementById('tab-' + tab).classList.add('active');
+				document.getElementById('searchInput').value = '';
+				renderActive();
+			}
 
-function renderBody() {
-  const q = document.getElementById('searchInput').value.trim();
-  const wrap = document.getElementById('tableWrap');
-  let html = '';
-  let rows;
+			function renderActive() {
+				renderTab(activeTab);
+			}
 
-  if (currentTab === 'packages') {
-    rows = buildRows(PACKAGES, q);
-    html = '<table><thead><tr><th>Package</th><th>Version</th><th>Submodule</th><th class="right">Source Lines</th><th class="right">Spec Lines</th><th class="right">Spec / source</th></tr></thead><tbody>';
-    rows.forEach(r => {
-      const src = r[3] - r[4];
-      html += '<tr><td class="pkg-name">' + r[0] + '</td>'
-        + '<td><span class="version">' + r[1] + '</span></td>'
-        + '<td><span class="sub-badge">' + r[2] + '</span></td>'
-        + '<td class="ts-lines">' + fmtN(src) + '</td>'
-        + '<td class="ts-lines">' + fmtN(r[4]) + '</td>'
-        + '<td class="test-pct">' + pct(r[4], r[3]) + '</td>'
-        + '</tr>';
-    });
-    html += '</tbody></table>';
-  } else if (currentTab === 'submodules') {
-    rows = buildRows(SUBMODULES, q);
-    html = '<table><thead><tr><th>Submodule</th><th class="right">Packages</th><th class="right">Source Lines</th><th class="right">Spec Lines</th><th class="right">Spec / source</th><th class="right">Prod deps</th><th class="right">Dev deps</th></tr></thead><tbody>';
-    rows.forEach(r => {
-      html += '<tr><td class="sub-name">' + r[0] + '</td>'
-        + '<td class="ts-lines">' + r[1] + '</td>'
-        + '<td class="ts-lines">' + fmtN(r[2] - r[5]) + '</td>'
-        + '<td class="ts-lines">' + fmtN(r[5]) + '</td>'
-        + '<td class="test-pct">' + pct(r[5], r[2]) + '</td>'
-        + '<td class="ts-lines">' + r[3] + '</td>'
-        + '<td class="ts-lines">' + r[4] + '</td>'
-        + '</tr>';
-    });
-    html += '</tbody></table>';
-  } else if (currentTab === 'prod') {
-    rows = buildRows(PROD_DEPS, q);
-    html = '<table><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>';
-    rows.forEach(r => {
-      html += '<tr><td class="pkg-name"><a href="https://www.npmjs.com/package/' + r[0] + '" target="_blank">' + r[0] + '</a></td>'
-        + '<td><span class="version">' + r[1] + '</span></td>'
-        + '</tr>';
-    });
-    html += '</tbody></table>';
-  } else {
-    rows = buildRows(DEV_DEPS, q);
-    html = '<table><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>';
-    rows.forEach(r => {
-      html += '<tr><td class="pkg-name"><a href="https://www.npmjs.com/package/' + r[0] + '" target="_blank">' + r[0] + '</a></td>'
-        + '<td><span class="version">' + r[1] + '</span></td>'
-        + '</tr>';
-    });
-    html += '</tbody></table>';
-  }
+			function q() {
+				return document.getElementById('searchInput').value.trim().toLowerCase();
+			}
 
-  wrap.innerHTML = html;
-  document.getElementById('rowCountLabel').textContent = rows.length + ' of ' + TABS[currentTab].count + ' shown';
-}
+			function buildRows(data, cols, rowFn) {
+				const qv = q();
+				const filtered = qv
+					? data.filter(r => cols.some(c => String(r[c]).toLowerCase().includes(qv)))
+					: data;
+				if (!filtered.length) return '<div class="no-results">No matches found.</div>';
+				return (
+					'<table><thead><tr>' +
+					cols
+						.map(c => {
+							const labels = {
+								0: 'Package',
+								1: 'Version',
+								2: 'Submodule',
+								3: 'Source Lines',
+								4: 'Spec Lines',
+								5: 'Spec / source'
+							};
+							return '<th>' + (labels[c] || 'Col ' + c) + '</th>';
+						})
+						.join('') +
+					'</tr></thead><tbody>' +
+					filtered.map(r => '<tr>' + rowFn(r) + '</tr>').join('') +
+					'</tbody></table>'
+				);
+			}
 
-function renderPrintAll() {
-  const container = document.getElementById('print-content');
-  let html = '';
+			function renderTab(tab) {
+				const el = document.getElementById('tab-' + tab);
+				const qv = q();
+				if (tab === 'packages') {
+					const filtered = qv
+						? PACKAGES.filter(
+								r =>
+									r[0].includes(qv) ||
+									r[1].includes(qv) ||
+									r[2].includes(qv) ||
+									String(r[3]).includes(qv)
+							)
+						: PACKAGES;
+					if (!filtered.length) {
+						el.innerHTML = '<div class="no-results">No matches.</div>';
+						return;
+					}
+					el.innerHTML =
+						'<table><thead><tr><th>Package</th><th>Version</th><th>Submodule</th><th class="num">Source Lines</th><th class="num">Spec Lines</th><th class="num">Spec / source</th></tr></thead><tbody>' +
+						filtered
+							.map(r => {
+								const src = r[3] - r[4];
+								const rat = src > 0 ? ((r[4] / src) * 100).toFixed(1) + '%' : 'n/a';
+								return (
+									'<tr><td><span class="pkg-name">' +
+									r[0] +
+									'</span></td><td><span class="version">' +
+									r[1] +
+									'</span></td><td><span class="sub-badge">' +
+									r[2] +
+									'</span></td><td class="num">' +
+									src.toLocaleString() +
+									'</td><td class="num">' +
+									r[4].toLocaleString() +
+									'</td><td class="num ratio">' +
+									rat +
+									'</td></tr>'
+								);
+							})
+							.join('') +
+						'</tbody></table>';
+				} else if (tab === 'submodules') {
+					const filtered = qv ? SUBMODULES.filter(r => r[0].includes(qv)) : SUBMODULES;
+					if (!filtered.length) {
+						el.innerHTML = '<div class="no-results">No matches.</div>';
+						return;
+					}
+					el.innerHTML =
+						'<table><thead><tr><th>Submodule</th><th class="num">Packages</th><th class="num">Source Lines</th><th class="num">Spec Lines</th><th class="num">Spec / source</th><th class="num">Prod deps</th><th class="num">Dev deps</th></tr></thead><tbody>' +
+						filtered
+							.map(r => {
+								const src = r[2] - r[5];
+								const rat = src > 0 ? ((r[5] / src) * 100).toFixed(1) + '%' : 'n/a';
+								return (
+									'<tr><td><span class="pkg-name">' +
+									r[0] +
+									'</span></td><td class="num">' +
+									r[1] +
+									'</td><td class="num">' +
+									src.toLocaleString() +
+									'</td><td class="num">' +
+									r[5].toLocaleString() +
+									'</td><td class="num ratio">' +
+									rat +
+									'</td><td class="num">' +
+									r[3] +
+									'</td><td class="num">' +
+									r[4] +
+									'</td></tr>'
+								);
+							})
+							.join('') +
+						'</tbody></table>';
+				} else if (tab === 'prod') {
+					const filtered = qv
+						? PROD_DEPS.filter(r => r[0].toLowerCase().includes(qv) || r[1].includes(qv))
+						: PROD_DEPS;
+					if (!filtered.length) {
+						el.innerHTML = '<div class="no-results">No matches.</div>';
+						return;
+					}
+					el.innerHTML =
+						'<table><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>' +
+						filtered
+							.map(
+								r =>
+									'<tr><td><a href="https://www.npmjs.com/package/' +
+									r[0] +
+									'" target="_blank" class="pkg-name">' +
+									r[0] +
+									'</a></td><td><span class="version">' +
+									r[1] +
+									'</span></td></tr>'
+							)
+							.join('') +
+						'</tbody></table>';
+				} else if (tab === 'dev') {
+					const filtered = qv
+						? DEV_DEPS.filter(r => r[0].toLowerCase().includes(qv) || r[1].includes(qv))
+						: DEV_DEPS;
+					if (!filtered.length) {
+						el.innerHTML = '<div class="no-results">No matches.</div>';
+						return;
+					}
+					el.innerHTML =
+						'<table><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>' +
+						filtered
+							.map(
+								r =>
+									'<tr><td><a href="https://www.npmjs.com/package/' +
+									r[0] +
+									'" target="_blank" class="pkg-name">' +
+									r[0] +
+									'</a></td><td><span class="version">' +
+									r[1] +
+									'</span></td></tr>'
+							)
+							.join('') +
+						'</tbody></table>';
+				}
+			}
 
-  html += '<div class="p-section"><div class="p-h2">Observations</div><ul class="p-obs">';
-  html += '<li>The codebase ships 195 independently versioned @twin.org/ packages across 34 submodules, averaging roughly 5-6 packages per submodule, reflecting a strong commitment to composable, single-responsibility modules.</li>';
-  html += '<li>At 41.2% spec-to-source ratio, the project has meaningful test coverage: for every 100 lines of source code there are 41 lines of spec. Coverage is uneven across submodules; standards and data packages tend to have near-zero spec lines since they are primarily type/schema declarations.</li>';
-  html += '<li>The production dependency footprint is lean: just 52 unique third-party packages serve the entire platform. AWS SDK, Azure, GCP, IOTA, and OpenTelemetry are the dominant vendor groups, reflecting the multi-cloud and distributed-ledger design goals.</li>';
-  html += '<li>All cryptographic primitives are sourced from the @noble and @scure families (curves, hashes, ciphers, bip32, bip39, base encodings), avoiding mixed crypto provenance and simplifying security auditing.</li>';
-  html += '<li>TypeScript 6.0.3 is used as both a production runtime dependency (for transformer/compiler tooling) and a dev dependency, and the codebase targets ESM-first output throughout as evidenced by type: module in every root manifest.</li>';
-  html += '<li>The toolchain is highly consistent: every submodule uses the same ESLint stack (unicorn, jsdoc, import-x, prettier, unused-imports), vitest with v8 coverage, ts-patch for decorator transforms, and release-please for versioning; this uniformity lowers onboarding friction significantly.</li>';
-  html += '</ul></div>';
+			// Bar chart
+			function drawChart() {
+				const canvas = document.getElementById('barChart');
+				if (!canvas) return;
+				const sorted = [...SUBMODULES].sort((a, b) => b[2] - a[2]);
+				const ROW_H = 26,
+					PAD_L = 220,
+					PAD_R = 80,
+					PAD_T = 10,
+					PAD_B = 10;
+				const maxLines = sorted[0][2];
+				canvas.height = sorted.length * ROW_H + PAD_T + PAD_B;
+				const W = canvas.offsetWidth || 900;
+				canvas.width = W;
+				const ctx = canvas.getContext('2d');
+				const BAR_W = W - PAD_L - PAD_R;
+				ctx.clearRect(0, 0, W, canvas.height);
+				const scale = v => Math.sqrt(v / maxLines) * BAR_W;
+				sorted.forEach((r, i) => {
+					const y = PAD_T + i * ROW_H;
+					const src = r[2] - r[5];
+					const spec = r[5];
+					const srcW = scale(src);
+					const specW = scale(spec);
+					// label
+					ctx.fillStyle = '#334';
+					ctx.font = '12px system-ui,sans-serif';
+					ctx.textAlign = 'right';
+					ctx.fillText(r[0], PAD_L - 8, y + 17);
+					// source bar
+					ctx.fillStyle = '#11224E';
+					ctx.fillRect(PAD_L, y + 4, srcW, 16);
+					// spec bar (stacked)
+					ctx.fillStyle = '#FF7200';
+					ctx.fillRect(PAD_L + srcW, y + 4, specW, 16);
+					// total label
+					ctx.fillStyle = '#667';
+					ctx.font = '11px system-ui,sans-serif';
+					ctx.textAlign = 'left';
+					ctx.fillText(r[2].toLocaleString(), PAD_L + srcW + specW + 6, y + 17);
+				});
+			}
 
-  html += '<div class="p-section"><div class="p-h2">@twin.org Package Inventory</div>';
-  html += '<table class="p-table"><thead><tr><th>Package</th><th>Version</th><th>Submodule</th><th>Source Lines</th><th>Spec Lines</th><th>Spec / source</th></tr></thead><tbody>';
-  PACKAGES.forEach(r => {
-    const src = r[3] - r[4];
-    const testPct = pct(r[4], r[3]);
-    html += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td><td>' + r[2] + '</td><td>' + fmtN(src) + '</td><td>' + fmtN(r[4]) + '</td><td>' + testPct + '</td></tr>';
-  });
-  html += '</tbody></table></div>';
+			function renderPrintAll() {
+				// Observations
+				document.getElementById('print-obs').innerHTML =
+					'<div class="print-section"><h2>Observations</h2><ul class="print-obs">' +
+					'<li><strong>twin-standards</strong> is the largest submodule by TypeScript volume (131,446 lines across 14 packages), reflecting its role as the core schema and type definitions layer shared across the entire platform.</li>' +
+					'<li><strong>Spec / source ratio of 41.3%</strong> shows solid test coverage across the codebase; twin-entity-storage leads with the highest absolute spec line count (26,961 lines).</li>' +
+					'<li><strong>196 published packages</strong> across 34 submodules gives an average of ~5.8 packages per submodule, indicating a fine-grained, modular architecture with clear separation of concerns.</li>' +
+					'<li><strong>58 unique production dependencies</strong> is relatively low for a project of this scale, reflecting a deliberate policy of minimising 3rd-party runtime exposure and preferring first-party implementations.</li>' +
+					'<li><strong>36 dev dependencies</strong> are shared across all submodules via workspace hoisting, keeping individual submodule tooling lean and ensuring consistent build tooling throughout the monorepo.</li>' +
+					'<li><strong>twin-node</strong> and <strong>twin-engine</strong> act as integration layers, aggregating capabilities from across the stack; their relatively high line counts (14,668 and 13,220) reflect the breadth of functionality they orchestrate.</li>' +
+					'</ul></div>';
 
-  html += '<div class="p-section"><div class="p-h2">3rd-Party Production Dependencies</div>';
-  html += '<table class="p-table"><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>';
-  PROD_DEPS.forEach(r => {
-    html += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
-  });
-  html += '</tbody></table></div>';
+				// Packages
+				document.getElementById('print-packages').innerHTML =
+					'<h2>@twin.org Package Inventory (' +
+					PACKAGES.length +
+					')</h2>' +
+					'<table><thead><tr><th>Package</th><th>Version</th><th>Submodule</th><th>Source Lines</th><th>Spec Lines</th><th>Spec / source</th></tr></thead><tbody>' +
+					PACKAGES.map(r => {
+						const src = r[3] - r[4];
+						const rat = src > 0 ? ((r[4] / src) * 100).toFixed(1) + '%' : 'n/a';
+						return (
+							'<tr><td>' +
+							r[0] +
+							'</td><td>' +
+							r[1] +
+							'</td><td>' +
+							r[2] +
+							'</td><td>' +
+							src.toLocaleString() +
+							'</td><td>' +
+							r[4].toLocaleString() +
+							'</td><td>' +
+							rat +
+							'</td></tr>'
+						);
+					}).join('') +
+					'</tbody></table>';
 
-  html += '<div class="p-section"><div class="p-h2">Development Dependencies</div>';
-  html += '<table class="p-table"><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>';
-  DEV_DEPS.forEach(r => {
-    html += '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
-  });
-  html += '</tbody></table></div>';
+				// Prod deps
+				document.getElementById('print-prod').innerHTML =
+					'<h2>3rd-Party Production Dependencies (' +
+					PROD_DEPS.length +
+					')</h2>' +
+					'<table><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>' +
+					PROD_DEPS.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') +
+					'</tbody></table>';
 
-  container.innerHTML = html;
-}
+				// Dev deps
+				document.getElementById('print-dev').innerHTML =
+					'<h2>Development Setup (' +
+					DEV_DEPS.length +
+					')</h2>' +
+					'<table><thead><tr><th>Package</th><th>Version</th></tr></thead><tbody>' +
+					DEV_DEPS.map(r => '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>').join('') +
+					'</tbody></table>';
+			}
 
-// Draw bar chart
-function drawChart() {
-  const canvas = document.getElementById('depthChart');
-  const sorted = [...SUBMODULES].sort((a,b) => b[2] - a[2]);
-  const maxVal = sorted[0][2];
-  const sqrtMax = Math.sqrt(maxVal);
-  const rowH = 26, padding = { top: 10, left: 200, right: 20, bottom: 10 };
-  const W = canvas.parentElement.clientWidth - 4;
-  const H = sorted.length * rowH + padding.top + padding.bottom;
-  canvas.width = W; canvas.height = H;
-  const ctx = canvas.getContext('2d');
-  const barW = W - padding.left - padding.right;
-
-  sorted.forEach((r, i) => {
-    const y = padding.top + i * rowH;
-    const totalSqrt = Math.sqrt(r[2]);
-    const specSqrt  = Math.sqrt(r[5]);
-    const fullW  = Math.round(totalSqrt / sqrtMax * barW);
-    const specW  = Math.round(specSqrt  / sqrtMax * barW);
-    const srcW   = fullW - specW;
-
-    // Label
-    ctx.fillStyle = '#334';
-    ctx.font = '11px system-ui,sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(r[0], padding.left - 8, y + rowH/2 + 4);
-
-    // Source bar (navy)
-    ctx.fillStyle = '#11224E';
-    ctx.fillRect(padding.left, y + 4, srcW, rowH - 8);
-
-    // Spec bar (orange)
-    if (specW > 0) {
-      ctx.fillStyle = '#FF7200';
-      ctx.fillRect(padding.left + srcW, y + 4, specW, rowH - 8);
-    }
-  });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  renderBody();
-  renderPrintAll();
-  drawChart();
-});
-</script>
-</body>
+			// Init
+			renderTab('packages');
+			renderPrintAll();
+			window.addEventListener('load', drawChart);
+			window.addEventListener('resize', drawChart);
+		</script>
+	</body>
 </html>

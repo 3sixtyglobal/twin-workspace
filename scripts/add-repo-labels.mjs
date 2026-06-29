@@ -46,6 +46,11 @@ const LABELS = [
 		name: 'chore',
 		color: '3eba9c',
 		description: 'A task that needs to be done but does not add any new features or fix any bugs'
+	},
+	{
+		name: 'testing',
+		color: 'add8e6',
+		description: 'A task to enhance testing coverage or improve testing infrastructure'
 	}
 ];
 

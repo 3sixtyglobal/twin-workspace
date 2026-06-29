@@ -36,7 +36,11 @@ async function run() {
 		try {
 			await execCommand('git', ['reset', '--hard', `origin/${branch}`], submodule);
 			await execCommand('git', ['checkout', branch], submodule);
-			await execCommand('git', ['branch', '--set-upstream-to', `origin/${branch}`, branch], submodule);
+			await execCommand(
+				'git',
+				['branch', '--set-upstream-to', `origin/${branch}`, branch],
+				submodule
+			);
 			await execCommand('git', ['pull', 'origin', branch], submodule);
 			process.stdout.write(`  Done\n`);
 			succeeded++;
