@@ -75,10 +75,14 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Merge next into main
+      - name: Apply next changes to main
         run: |
           git fetch origin next
-          git merge origin/next --no-edit
+          # Apply the exact diff from main → next as a single patch.
+          # Using diff | apply bypasses the merge algorithm entirely — no
+          # conflicts to resolve and no next commits pulled into main history.
+          # Correctly handles all cases: adds, modifies, deletes, and renames.
+          git diff --binary origin/main origin/next | git apply --index
 
       - name: Align submodules to main
         run: npm run submodule:align-main
