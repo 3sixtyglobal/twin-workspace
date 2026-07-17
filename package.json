@@ -65,7 +65,8 @@
 		"twin-engine",
 		"twin-node",
 		"twin-ui",
-		"twin-playground"
+		"twin-playground",
+		"twin-tracing"
 	],
 	"type": "module",
 	"devDependencies": {
