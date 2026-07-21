@@ -148,3 +148,4 @@
 [submodule "twin-tracing"]
 	path = twin-tracing
 	url = https://github.com/iotaledger/twin-tracing.git
+	branch = next
