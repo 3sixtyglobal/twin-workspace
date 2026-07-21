@@ -145,3 +145,6 @@
 	path = twin-automation
 	url = https://github.com/iotaledger/twin-automation.git
 	branch = next
+[submodule "twin-tracing"]
+	path = twin-tracing
+	url = https://github.com/iotaledger/twin-tracing.git

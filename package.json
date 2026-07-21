@@ -41,6 +41,7 @@
 		"twin-vault",
 		"twin-blob-storage",
 		"twin-telemetry",
+		"twin-tracing",
 		"twin-automation",
 		"twin-background-task",
 		"twin-data-processing",
