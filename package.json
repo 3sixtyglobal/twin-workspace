@@ -23,8 +23,10 @@
 		"submodule:dist-no-test": "node ./scripts/submodules.mjs dist-no-test",
 		"submodule:test": "node ./scripts/submodules.mjs test",
 		"submodule:docs": "node ./scripts/submodules.mjs docs",
+		"submodule:format-lint-dist-docs": "node ./scripts/submodules.mjs format-lint-dist-docs",
 		"submodule:refresh-deps": "node ./scripts/submodules.mjs refresh-deps",
 		"submodule:refresh-deps-build": "node ./scripts/submodules.mjs refresh-deps-build",
+		"submodule:update-deps": "node ./scripts/submodules.mjs update-deps",
 		"submodule:update-deps-build": "node ./scripts/submodules.mjs update-deps-build",
 		"submodule:align-main": "node ./scripts/submodule-align.mjs main",
 		"submodule:align-next": "node ./scripts/submodule-align.mjs next"

@@ -7,5 +7,6 @@
 	"flowbite-svelte*",
 	"@vitejs/plugin-react",
 	"@sveltejs/vite-plugin-svelte",
-	"lucide-react"
+	"lucide-react",
+	"typescript"
 ]
