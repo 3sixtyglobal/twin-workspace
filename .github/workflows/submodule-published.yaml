@@ -1,10 +1,16 @@
 name: Workspace Submodule Build
 
-# Run automatically for changes on next and allow manual execution.
+# Run automatically for main and next (separate schedules) and allow manual execution.
 on:
   schedule:
+    # Main branch build window (weekdays at 00:00 UTC).
     - cron: '0 0 * * 1-5'
+    # Next branch build window (weekdays at 00:30 UTC).
+    - cron: '30 0 * * 1-5'
+    # Main branch build window (weekdays at 12:00 UTC).
     - cron: '0 12 * * 1-5'
+    # Next branch build window (weekdays at 12:30 UTC).
+    - cron: '30 12 * * 1-5'
   workflow_dispatch:
     inputs:
       releaseType:
@@ -49,6 +55,12 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
             BRANCH="${{ github.event.client_payload.branch }}"
+          elif [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "${{ github.event.schedule }}" = "0 0 * * 1-5" ] || [ "${{ github.event.schedule }}" = "0 12 * * 1-5" ]; then
+              BRANCH="main"
+            else
+              BRANCH="next"
+            fi
           elif [ "${{ github.event_name }}" = "workflow_dispatch" ] && [[ "${{ github.event.inputs.releaseType }}" == *"main"* ]]; then
             BRANCH="main"
           else
