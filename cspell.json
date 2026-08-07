@@ -1,7 +1,7 @@
 {
 	"language": "en-GB",
 	"ignorePaths": [],
-	"words": ["Stiftung"],
+	"words": ["Stiftung", "Dataspace", "dataspace", "IDSA", "ODRL", "Firestore", "IPFS", "CEFACT", "DCSA", "DCAT", "FOAF", "LOCODE"],
 	"ignoreRegExpList": [],
 	"ignoreWords": ["Cunknown"]
 }
