@@ -83,5 +83,5 @@ async function addLabelToRepo(repoName) {
 }
 
 // addLabelToAllRepos();
-addLabelToRepo("twin-authorization");
-addLabelToRepo("twin-api-auth");
+addLabelToRepo("twin-tracing");
+
