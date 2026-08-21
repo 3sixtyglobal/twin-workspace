@@ -42,7 +42,6 @@
 		"twin-entity-storage",
 		"twin-vault",
 		"twin-blob-storage",
-		"twin-authorization",
 		"twin-telemetry",
 		"twin-tracing",
 		"twin-automation",
