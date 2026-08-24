@@ -149,6 +149,3 @@
 	path = twin-tracing
 	url = https://github.com/iotaledger/twin-tracing.git
 	branch = next
-[submodule "twin-authorization"]
-	path = twin-authorization
-	url = https://github.com/iotaledger/twin-authorization.git
