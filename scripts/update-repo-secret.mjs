@@ -72,4 +72,6 @@ async function setSecretAllRepos(secretName, secretValue) {
 	}
 }
 
-setSecretAllRepos('TWIN_NPM_TOKEN', '....');
+const newValue = ``;
+
+setSecretAllRepos('TWIN_TEST_ENV_VARS', newValue);
