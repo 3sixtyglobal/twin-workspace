@@ -122,9 +122,6 @@
 	path = twin-synchronised-storage
 	url = https://github.com/iotaledger/twin-synchronised-storage.git
 	branch = next
-[submodule "twin-rfcs"]
-	path = twin-rfcs
-	url = https://github.com/iotaledger/twin-rfcs.git
 [submodule "twin-trust"]
 	path = twin-trust
 	url = https://github.com/iotaledger/twin-trust.git
