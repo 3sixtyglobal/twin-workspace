@@ -31,6 +31,10 @@ jobs:
         with:
           node-version: 24
 
+      # Setup pnpm after node, the runners have no system node for its installer to use.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Import GPG key
         run: |
           echo "${{ secrets.TWIN_GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
@@ -44,7 +48,7 @@ jobs:
           git config --global commit.gpgsign true
 
       - name: Align submodules to next
-        run: npm run submodule:align-next
+        run: pnpm run submodule:align-next
 
       - name: Commit and push
         run: |
@@ -86,6 +90,10 @@ jobs:
         with:
           node-version: 24
 
+      # Setup pnpm after node, the runners have no system node for its installer to use.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
       - name: Import GPG key
         run: |
           echo "${{ secrets.TWIN_GPG_PRIVATE_KEY }}" | base64 --decode | gpg --import
@@ -108,7 +116,7 @@ jobs:
           git diff --binary origin/main origin/next | git apply --index
 
       - name: Align submodules to main
-        run: npm run submodule:align-main
+        run: pnpm run submodule:align-main
 
       - name: Commit and push
         run: |

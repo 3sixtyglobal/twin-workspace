@@ -16,7 +16,7 @@ Detailed documentation is split into dedicated root files:
 
 - [Submodules Guide](./SUBMODULES.md)
 - [Development Guide](./DEVELOPMENT.md)
-- [NPM Commands](./NPM_COMMANDS.md)
+- [Commands](./COMMANDS.md)
 - [Workflow Guide](./WORKFLOWS.md)
 
 ## Project audit

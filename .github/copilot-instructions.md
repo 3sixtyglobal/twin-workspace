@@ -13,7 +13,7 @@ This repository is an orchestration workspace for TWIN submodules. It keeps many
 Typical root-level changes are limited to:
 
 - `scripts/` automation for submodule orchestration
-- root documentation such as `README.md`, `DEVELOPMENT.md`, `NPM_COMMANDS.md`, `SUBMODULES.md`, and `WORKFLOWS.md`
+- root documentation such as `README.md`, `DEVELOPMENT.md`, `COMMANDS.md`, `SUBMODULES.md`, and `WORKFLOWS.md`
 - `.gitmodules`, workspace metadata, and submodule pointer updates
 - cross-repo maintenance commands that intentionally operate across many submodules
 
@@ -24,7 +24,7 @@ If a request is really about one submodule, say so briefly and move to that repo
 - Prefer the narrowest validation that matches the files you changed.
 - For root documentation-only changes, run formatting only if needed.
 - For root script changes, run the smallest relevant script or check before widening to broader workspace commands.
-- Use workspace-wide commands such as `npm run submodule:lint`, `npm run submodule:test`, or `npm run submodule:dist` only when the change genuinely affects multiple submodules or orchestration behaviour.
+- Use workspace-wide commands such as `pnpm run submodule:lint`, `pnpm run submodule:test`, or `pnpm run submodule:dist` only when the change genuinely affects multiple submodules or orchestration behaviour.
 - Do not run expensive cross-workspace commands by default for a single-repo or documentation-only task.
 
 ## Submodule-Aware Workflow
@@ -53,7 +53,7 @@ If a request is really about one submodule, say so briefly and move to that repo
 Use these root documents as the source of truth for workflow expectations in this repo:
 
 - `DEVELOPMENT.md`
-- `NPM_COMMANDS.md`
+- `COMMANDS.md`
 - `SUBMODULES.md`
 - `WORKFLOWS.md`
 

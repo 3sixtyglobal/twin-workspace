@@ -59,7 +59,7 @@ Workspace commands (install, format, lint, dist) run in the order declared in `p
 - Place consumers later so dependency chains are built in a sensible sequence.
 - Use `:single` script variants when validating one repository in isolation.
 
-For the command details and examples, see [NPM Commands](./NPM_COMMANDS.md).
+For the command details and examples, see [Commands](./COMMANDS.md).
 
 ## Branch and commit management
 

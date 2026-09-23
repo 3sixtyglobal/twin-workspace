@@ -123,14 +123,20 @@ jobs:
         with:
           node-version: 24
 
+      # Setup pnpm after node, the runners have no system node for its installer to use.
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          package_json_file: ${{ matrix.submodule }}/package.json
+
       # Remove lock files so dependency install resolves latest versions.
-      - name: Remove package-lock files
-        run: find . -type f -name "package-lock.json" -delete
+      - name: Remove lock files
+        run: find . -type f -name "pnpm-lock.yaml" -delete
         working-directory: ${{ matrix.submodule }}
 
       # Install dependencies for the current submodule.
       - name: Install submodule dependencies
-        run: npm install
+        run: pnpm install
         working-directory: ${{ matrix.submodule }}
 
       # Resolve testing mode to a simple boolean flag for later steps.
@@ -162,9 +168,9 @@ jobs:
       - name: Build submodule
         run: |
           if [ "${{ steps.testing-mode.outputs.enabled }}" = "true" ]; then
-            npm run dist
+            pnpm run dist
           else
-            npm run dist:no-test
+            pnpm run dist:no-test
           fi
         working-directory: ${{ matrix.submodule }}
 

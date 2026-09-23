@@ -24,10 +24,10 @@ The workflow reads the `submodules` array from `package.json` and runs a matrix 
 
 Behaviour:
 
-- `⚡ no-test` runs `npm run dist:no-test` for each submodule.
-- `🧪 test` runs setup/teardown composite actions plus `npm run dist`:
+- `⚡ no-test` runs `pnpm run dist:no-test` for each submodule.
+- `🧪 test` runs setup/teardown composite actions plus `pnpm run dist`:
   - prepares and runs the submodule `setup-test-env` action
-  - runs `npm run dist`
+  - runs `pnpm run dist`
   - prepares and runs the submodule `teardown-test-env` action (with `always()` semantics)
 
 For non-manual triggers (`push`, `pull_request`, `repository_dispatch`), the workflow defaults to no-test mode.

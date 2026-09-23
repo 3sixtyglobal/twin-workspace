@@ -9,12 +9,14 @@
 	"author": "martyn.janes@iota.org",
 	"license": "Apache-2.0",
 	"private": true,
+	"packageManager": "pnpm@12.4.1",
 	"engines": {
 		"node": ">=24.0.0"
 	},
 	"scripts": {
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
+		"package:update": "pnpm update --interactive --latest",
 		"submodule:install": "node ./scripts/submodules.mjs install",
 		"submodule:format": "node ./scripts/submodules.mjs format",
 		"submodule:lint": "node ./scripts/submodules.mjs lint",
@@ -23,11 +25,10 @@
 		"submodule:dist-no-test": "node ./scripts/submodules.mjs dist-no-test",
 		"submodule:test": "node ./scripts/submodules.mjs test",
 		"submodule:docs": "node ./scripts/submodules.mjs docs",
+		"submodule:quality": "node ./scripts/submodules.mjs quality",
+		"submodule:quality-no-test": "node ./scripts/submodules.mjs quality-no-test",
 		"submodule:format-lint-dist-docs": "node ./scripts/submodules.mjs format-lint-dist-docs",
-		"submodule:refresh-deps": "node ./scripts/submodules.mjs refresh-deps",
-		"submodule:refresh-deps-build": "node ./scripts/submodules.mjs refresh-deps-build",
-		"submodule:update-deps": "node ./scripts/submodules.mjs update-deps",
-		"submodule:update-deps-build": "node ./scripts/submodules.mjs update-deps-build",
+		"submodule:package-update": "node ./scripts/submodules.mjs package-update",
 		"submodule:align-main": "node ./scripts/submodule-align.mjs main",
 		"submodule:align-next": "node ./scripts/submodule-align.mjs next"
 	},
@@ -66,15 +67,13 @@
 		"twin-federated-catalogue",
 		"twin-dataspace",
 		"twin-engine",
-		"twin-node",
-		"twin-ui",
-		"twin-playground"
+		"twin-node"
 	],
 	"type": "module",
 	"devDependencies": {
-		"@octokit/rest": "22.0.0",
-		"glob": "11.0.3",
-		"prettier": "3.8.3"
+		"@octokit/rest": "22.0.1",
+		"glob": "13.0.6",
+		"prettier": "3.9.8"
 	},
 	"bugs": {
 		"url": "git+https://github.com/iotaledger/twin-workspace/issues"

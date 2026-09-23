@@ -1,0 +1,5 @@
+# The workspace repo has no sub packages, this file carries the pnpm settings
+# which are applied when installing the orchestration dependencies.
+
+# Every dependency in the repo is pinned to an exact version.
+saveExact: true

@@ -36,11 +36,6 @@ async function run() {
 	}
 
 	const packageJson = await loadJson('package.json');
-	const updateExclusionList = await loadUpdateExclusionList();
-	const ncuExclusionArgs = updateExclusionList.flatMap(exclusion => [
-		'-x',
-		normaliseExclusion(exclusion)
-	]);
 	let submodules = packageJson.submodules;
 
 	if (module) {
@@ -57,63 +52,37 @@ async function run() {
 	for (const submodule of submodules) {
 		process.stdout.write(`Submodule: ${submodule}\n`);
 		if (command === 'install') {
-			await runShellCmd('npm', ['install'], submodule);
+			await runShellCmd('pnpm', ['install'], submodule);
 		} else if (command === 'format') {
-			await runShellCmd('npm', ['run', 'format'], submodule);
+			await runShellCmd('pnpm', ['run', 'format'], submodule);
 		} else if (command === 'lint') {
-			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd('npm', ['run', 'lint'], submodule);
+			await removeCaches(submodule);
+			await runShellCmd('pnpm', ['run', 'lint'], submodule);
 		} else if (command === 'lint:code') {
-			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd('npm', ['run', 'lint:code'], submodule);
+			await removeCaches(submodule);
+			await runShellCmd('pnpm', ['run', 'lint:code'], submodule);
 		} else if (command === 'dist') {
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
+			await runShellCmd('pnpm', ['run', 'dist'], submodule);
 		} else if (command === 'format-lint-dist-docs') {
-			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd('npm', ['run', 'format'], submodule);
-			await runShellCmd('npm', ['run', 'lint:code'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'docs'], submodule);
+			await removeCaches(submodule);
+			await runShellCmd('pnpm', ['run', 'format'], submodule);
+			await runShellCmd('pnpm', ['run', 'lint:code'], submodule);
+			await runShellCmd('pnpm', ['run', 'dist'], submodule);
+			await runShellCmd('pnpm', ['run', 'docs'], submodule);
 		} else if (command === 'dist-no-test') {
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist:no-test'], submodule);
+			await runShellCmd('pnpm', ['run', 'dist:no-test'], submodule);
 		} else if (command === 'test') {
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'test'], submodule);
+			await runShellCmd('pnpm', ['run', 'test'], submodule);
 		} else if (command === 'docs') {
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'docs'], submodule);
-		} else if (command === 'refresh-deps') {
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd('npm', ['install'], submodule);
-		} else if (command === 'refresh-deps-build') {
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd('npm', ['install'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
-		} else if (command === 'update-deps') {
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd(
-				'npx',
-				['--yes', 'npm-check-updates', '--deep', '-u', ...ncuExclusionArgs],
-				submodule
-			);
-			await runShellCmd('npm', ['install'], submodule);
-		} else if (command === 'update-deps-build') {
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/node_modules'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '--glob', '**/package-lock.json'], submodule);
-			await runShellCmd('npx', ['--yes', 'rimraf', '.eslintcache'], submodule);
-			await runShellCmd(
-				'npx',
-				['--yes', 'npm-check-updates', '--deep', '-u', ...ncuExclusionArgs],
-				submodule
-			);
-			await runShellCmd('npm', ['install'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'format'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'lint'], submodule);
-			await runShellApp('node', ['./scripts/workspaces.mjs', 'dist'], submodule);
+			await runShellCmd('pnpm', ['run', 'docs'], submodule);
+		} else if (command === 'quality') {
+			await removeCaches(submodule);
+			await runShellCmd('pnpm', ['run', 'quality'], submodule);
+		} else if (command === 'quality-no-test') {
+			await removeCaches(submodule);
+			await runShellCmd('pnpm', ['run', 'quality:no-test'], submodule);
+		} else if (command === 'package-update') {
+			await runShellCmd('pnpm', ['run', 'package:update'], submodule);
 		} else {
 			throw new Error(`Unknown command ${command}`);
 		}
@@ -133,26 +102,12 @@ async function loadJson(filePath) {
 }
 
 /**
- * Load update exclusions for npm-check-updates.
- * @returns The exclusions loaded from scripts/update-exclusion.json.
+ * Remove the lint caches from a submodule.
+ * @param submodule The submodule to remove the caches from.
+ * @returns Promise to wait for the removal to complete.
  */
-async function loadUpdateExclusionList() {
-	const exclusions = await loadJson('scripts/update-exclusion.json');
-
-	if (!Array.isArray(exclusions) || exclusions.some(exclusion => typeof exclusion !== 'string')) {
-		throw new Error('scripts/update-exclusion.json must contain an array of strings');
-	}
-
-	return exclusions;
-}
-
-/**
- * Normalise exclusion values so each value can be used with -x.
- * @param exclusion The exclusion entry.
- * @returns The normalised package name.
- */
-function normaliseExclusion(exclusion) {
-	return exclusion.replace(/^-x\s*/, '').trim();
+async function removeCaches(submodule) {
+	await runShellCmd('pnpm', ['dlx', 'rimraf', '--glob', '.eslintcache'], submodule);
 }
 
 /**
@@ -169,33 +124,6 @@ async function runShellCmd(app, args, cwd) {
 		const osCommand = process.platform.startsWith('win') ? `${app}.cmd` : app;
 
 		const sp = spawn(osCommand, args, {
-			stdio: 'inherit',
-			shell: true,
-			cwd
-		});
-
-		sp.on('exit', (exitCode, signals) => {
-			if (Number.parseInt(exitCode, 10) !== 0 || signals?.length) {
-				reject(new Error('Run failed'));
-			} else {
-				resolve();
-			}
-		});
-	});
-}
-
-/**
- * Run a shell app.
- * @param app The app to run in the shell.
- * @param args The args for the app.
- * @param cwd The working directory to execute the command in.
- * @returns Promise to wait for command execution to complete.
- */
-async function runShellApp(app, args, cwd) {
-	return new Promise((resolve, reject) => {
-		process.stdout.write(`${app} ${args.join(' ')}\n`);
-
-		const sp = spawn(app, args, {
 			stdio: 'inherit',
 			shell: true,
 			cwd

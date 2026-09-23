@@ -8,7 +8,8 @@ For day-to-day implementation work, open the specific submodule repository in VS
 
 ## Prerequisites
 
-- Node.js `>=20.0.0`
+- Node.js `>=24.0.0`
+- pnpm, which is provided by corepack using the `packageManager` version in `package.json`
 - Git with submodule support
 - Access to the submodule repositories
 
@@ -27,11 +28,11 @@ git submodule update --recursive
 git pull --recurse-submodules
 ```
 
-1. Run workspace-wide orchestration commands when needed (for example from [NPM_COMMANDS.md](./NPM_COMMANDS.md)):
+1. Run workspace-wide orchestration commands when needed (for example from [COMMANDS.md](./COMMANDS.md)):
 
 ```shell
-npm run submodule:install
-npm run submodule:lint
+pnpm run submodule:install
+pnpm run submodule:lint
 ```
 
 1. Open and work in the target submodule repo for actual feature development.
@@ -43,7 +44,7 @@ The workspace does not directly consume sibling source code during development. 
 When you need to test local changes from one repository inside another before a release, run the target repository's local link script:
 
 ```shell
-npm run local-link
+pnpm run local-link
 ```
 
 This script creates a symlink to the locally built package so dependent repos can consume your local changes immediately.
@@ -51,6 +52,6 @@ This script creates a symlink to the locally built package so dependent repos ca
 ## Practical guidance
 
 - Build and validate the source repository before linking so consumers use the latest local output.
-- Re-run `npm run local-link` after rebuilding if the linked package output changes.
+- Re-run `pnpm run local-link` after rebuilding if the linked package output changes.
 - Keep your submodules on the intended branch (for most repos this is `next`) while integrating multi-repo changes.
 - Use workspace orchestration commands for broad checks, then debug failures directly in the affected submodule.
