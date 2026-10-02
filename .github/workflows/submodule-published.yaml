@@ -42,9 +42,8 @@ concurrency:
 jobs:
   read-submodules:
     # Read the submodule list from package.json once and expose it as a matrix.
-    runs-on:
-      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
-      group: ${{ github.event.repository.private && 'twin' || 'default' }}
+    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"twin","labels":"self-hosted"}') || 'ubuntu-latest' }}
+
     outputs:
       submodules: ${{ steps.get-submodules.outputs.submodules }}
       branch: ${{ steps.set-branch.outputs.branch }}
@@ -95,9 +94,8 @@ jobs:
   build-submodules:
     # Build each submodule independently with per-submodule cache keys.
     needs: read-submodules
-    runs-on:
-      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
-      group: ${{ github.event.repository.private && 'twin' || 'default' }}
+    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"twin","labels":"self-hosted"}') || 'ubuntu-latest' }}
+
     timeout-minutes: 180
     strategy:
       max-parallel: 4

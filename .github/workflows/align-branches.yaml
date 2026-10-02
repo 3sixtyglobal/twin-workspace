@@ -13,9 +13,7 @@ concurrency:
 jobs:
   align-next:
     name: Align next branch
-    runs-on:
-      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
-      group: ${{ github.event.repository.private && 'twin' || 'default' }}
+    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"twin","labels":"self-hosted"}') || 'ubuntu-latest' }}
 
     steps:
       - name: Checkout workspace
@@ -72,9 +70,7 @@ jobs:
   align-main:
     name: Align main branch
     needs: align-next
-    runs-on:
-      labels: ${{ github.event.repository.private && 'self-hosted' || 'ubuntu-latest' }}
-      group: ${{ github.event.repository.private && 'twin' || 'default' }}
+    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"twin","labels":"self-hosted"}') || 'ubuntu-latest' }}
 
     steps:
       - name: Checkout workspace
