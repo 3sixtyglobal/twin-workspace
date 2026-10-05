@@ -11,7 +11,7 @@ Submodules are listed in the root `package.json` `submodules` array. That order 
 Clone the workspace and all submodules:
 
 ```shell
-git clone --recursive https://github.com/iotaledger/twin-workspace.git
+git clone --recursive https://github.com/3sixtyglobal/twin-workspace.git
 ```
 
 If you cloned without `--recursive`, initialise and fetch submodules afterwards:
@@ -46,7 +46,7 @@ git submodule foreach "git status --short --branch"
 Add a new module:
 
 ```shell
-git submodule add https://github.com/iotaledger/twin-<name>.git
+git submodule add https://github.com/3sixtyglobal/twin-<name>.git
 ```
 
 After adding the repository, also add its name to the root `package.json` `submodules` array so workspace scripts can process it.

@@ -11,7 +11,7 @@ const workspacePackage = JSON.parse(
 	readFileSync(new URL('../package.json', import.meta.url), 'utf8')
 );
 
-const ORG = 'iotaledger';
+const ORG = '3sixtyglobal';
 const SUBMODULES = ['twin-workspace', ...workspacePackage.submodules];
 
 /**

@@ -10,7 +10,7 @@ const octokit = new Octokit({
 	auth: 'github_pat_...'
 });
 
-const ORG = 'iotaledger';
+const ORG = '3sixtyglobal';
 const LABELS = [
 	{
 		name: 'autorelease: pending',

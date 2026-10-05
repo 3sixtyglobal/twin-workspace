@@ -42,7 +42,7 @@ That workflow triggers on:
 - `push` to `next`
 - merged `pull_request` events targeting `next`
 
-It dispatches a repository event to `iotaledger/workspace` using `gh api`:
+It dispatches a repository event to `3sixtyglobal/workspace` using `gh api`:
 
 - `event_type`: `submodule-changed`
 - `client_payload`: includes `submodule`, `branch`, `sha`, and optional `pr`
