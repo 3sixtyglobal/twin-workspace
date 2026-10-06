@@ -70,10 +70,6 @@
 	path = twin-auditable-item-stream
 	url = https://github.com/3sixtyglobal/twin-auditable-item-stream.git
 	branch = next
-[submodule "twin-ui"]
-	path = twin-ui
-	url = https://github.com/3sixtyglobal/twin-ui.git
-	branch = next
 [submodule "twin-immutable-proof"]
 	path = twin-immutable-proof
 	url = https://github.com/3sixtyglobal/twin-immutable-proof.git
@@ -113,10 +109,6 @@
 [submodule "twin-federated-catalogue"]
 	path = twin-federated-catalogue
 	url = https://github.com/3sixtyglobal/twin-federated-catalogue.git
-	branch = next
-[submodule "twin-playground"]
-	path = twin-playground
-	url = https://github.com/3sixtyglobal/twin-playground.git
 	branch = next
 [submodule "twin-synchronised-storage"]
 	path = twin-synchronised-storage

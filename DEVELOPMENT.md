@@ -13,6 +13,8 @@ For day-to-day implementation work, open the specific submodule repository in VS
 - Git with submodule support
 - Access to the submodule repositories
 
+Each submodule follows the setup, branch, commit and release conventions described in its own `CONTRIBUTING.md`. Running `pnpm install` in a submodule also installs its `.githooks`, which check commit messages and branch names.
+
 ## Typical local workflow
 
 1. Clone the workspace with submodules:
@@ -32,7 +34,7 @@ git pull --recurse-submodules
 
 ```shell
 pnpm run submodule:install
-pnpm run submodule:lint
+pnpm run submodule:quality-no-test
 ```
 
 1. Open and work in the target submodule repo for actual feature development.

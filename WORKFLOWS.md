@@ -1,23 +1,36 @@
 # Workflow Guide
 
-## Submodule CI workflows
+## Workspace workflows
+
+The workspace repository contains the following workflows in `.github/workflows`.
+
+| Workflow                  | File                         | Triggers                                               |
+| ------------------------- | ---------------------------- | ------------------------------------------------------ |
+| Workspace Submodule Build | `submodule-published.yaml`   | `schedule`, `workflow_dispatch`, `repository_dispatch` |
+| Align Branches            | `align-branches.yaml`        | `workflow_dispatch`                                    |
+| Publish Project Audit     | `publish-project-audit.yaml` | `workflow_dispatch`                                    |
+| Project Add Issue         | `project-add-issue.yaml`     | `issues` opened                                        |
 
 ### Workspace Submodule Build
 
-The workspace repo has a central workflow at `.github/workflows/submodule-build.yaml` named **Workspace Submodule Build**.
+The **Workspace Submodule Build** workflow reads the `submodules` array from `package.json` and builds each submodule in a matrix, with up to 4 running in parallel. Each submodule is checked out directly from GitHub, its `pnpm-lock.yaml` files are removed so the latest dependency versions are resolved, and it is then built.
 
 It can run via:
 
+- `schedule`, on weekdays at 00:00 and 12:00 UTC for `main`, and at 00:30 and 12:30 UTC for `next`
 - `workflow_dispatch` (manual run)
-- `repository_dispatch` with event type `submodule-changed`
-- `pull_request` to `next`
-- `push` to `next`
-
-The workflow reads the `submodules` array from `package.json` and runs a matrix build for each submodule in parallel.
+- `repository_dispatch` with event type `submodule-published`, building the branch given in the payload
 
 #### Manual run options
 
-`workflow_dispatch` exposes `runTesting` as a choice input:
+`workflow_dispatch` exposes two choice inputs.
+
+`releaseType` selects the branch to build:
+
+- `🌱 prerelease (next branch)` (default)
+- `🌳 production (main branch)`
+
+`runTesting` selects the build mode:
 
 - `⚡ no-test` (default)
 - `🧪 test`
@@ -30,31 +43,32 @@ Behaviour:
   - runs `pnpm run dist`
   - prepares and runs the submodule `teardown-test-env` action (with `always()` semantics)
 
-For non-manual triggers (`push`, `pull_request`, `repository_dispatch`), the workflow defaults to no-test mode.
+For the `schedule` and `repository_dispatch` triggers, the workflow always runs in no-test mode.
 
-### How notifications are dispatched from other repos
+### Align Branches
 
-Each submodule repo contains `.github/workflows/notify-workspace.yaml` (**Notify Workspace**).
+The **Align Branches** workflow is run manually to bring the workspace submodule pointers up to date:
 
-That workflow triggers on:
+1. Checks out `next`, runs `pnpm run submodule:align-next` to move every submodule to the head of its `next` branch, then commits and pushes `chore: update next submodules`.
+1. Checks out `main`, applies the diff from `main` to `next`, runs `pnpm run submodule:align-main` to move every submodule to the head of its `main` branch, then commits and pushes `chore: update main submodules`.
 
-- `workflow_dispatch`
-- `push` to `next`
-- merged `pull_request` events targeting `next`
+Commits are GPG signed using the bot identity from the `TWIN_GPG_NAME` and `TWIN_GPG_EMAIL` secrets.
 
-It dispatches a repository event to `3sixtyglobal/workspace` using `gh api`:
+### Publish Project Audit
 
-- `event_type`: `submodule-changed`
-- `client_payload`: includes `submodule`, `branch`, `sha`, and optional `pr`
+The **Publish Project Audit** workflow deploys the contents of `docs/project-audit` from the `next` branch to Vercel and assigns the production audit domain alias.
 
-This `repository_dispatch` is what triggers the workspace `Workspace Submodule Build` workflow.
+### Project Add Issue
 
-### How release workflows trigger notifications
+The **Project Add Issue** workflow adds each newly opened issue to the TWIN organisation project and labels it `needs-triage`.
 
-Submodule `publish-release.yaml` workflows include a `trigger-notify-workspace` job after release publishing.
+## How submodules notify the workspace
 
-That job calls:
+The `Release Next` and `Release Production` workflows in each submodule repository contain a `notify-workspace` job that runs once the packages and GitHub releases have been published.
 
-- `repos/${{ github.repository }}/actions/workflows/notify-workspace.yaml/dispatches`
+That job dispatches a repository event to `3sixtyglobal/twin-workspace` using `gh api`:
 
-with `ref` set to the computed release branch. This explicitly runs each repo's **Notify Workspace** workflow, which then sends the `submodule-changed` repository dispatch to the workspace repo.
+- `event_type`: `submodule-published`
+- `client_payload`: includes `submodule`, `branch` (`next` or `main`) and `sha`
+
+This `repository_dispatch` triggers the workspace **Workspace Submodule Build** workflow for the published branch, so every consumer is rebuilt against the newly published packages.

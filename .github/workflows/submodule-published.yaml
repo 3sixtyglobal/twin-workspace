@@ -17,10 +17,10 @@ on:
         description: Release type to build
         required: true
         type: choice
-        default: '🚧 prerelease (next branch)'
+        default: '🌱 prerelease (next branch)'
         options:
-          - '🚧 prerelease (next branch)'
-          - '🚀 production (main branch)'
+          - '🌱 prerelease (next branch)'
+          - '🌳 production (main branch)'
       runTesting:
         description: Run submodule builds with testing enabled
         required: true
