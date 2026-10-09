@@ -1,140 +1,148 @@
-[submodule "twin-api"]
-	path = twin-api
-	url = https://github.com/3sixtyglobal/twin-api.git
+[submodule "api"]
+	path = api
+	url = https://github.com/3sixtyglobal/api.git
 	branch = next
-[submodule "twin-attestation"]
-	path = twin-attestation
-	url = https://github.com/3sixtyglobal/twin-attestation.git
+[submodule "attestation"]
+	path = attestation
+	url = https://github.com/3sixtyglobal/attestation.git
 	branch = next
-[submodule "twin-auditable-item-graph"]
-	path = twin-auditable-item-graph
-	url = https://github.com/3sixtyglobal/twin-auditable-item-graph.git
+[submodule "auditable-item-graph"]
+	path = auditable-item-graph
+	url = https://github.com/3sixtyglobal/auditable-item-graph.git
 	branch = next
-[submodule "twin-blob-storage"]
-	path = twin-blob-storage
-	url = https://github.com/3sixtyglobal/twin-blob-storage.git
+[submodule "blob-storage"]
+	path = blob-storage
+	url = https://github.com/3sixtyglobal/blob-storage.git
 	branch = next
-[submodule "twin-data"]
-	path = twin-data
-	url = https://github.com/3sixtyglobal/twin-data.git
+[submodule "data"]
+	path = data
+	url = https://github.com/3sixtyglobal/data.git
 	branch = next
-[submodule "twin-dlt"]
-	path = twin-dlt
-	url = https://github.com/3sixtyglobal/twin-dlt.git
+[submodule "dlt"]
+	path = dlt
+	url = https://github.com/3sixtyglobal/dlt.git
 	branch = next
-[submodule "twin-entity-storage"]
-	path = twin-entity-storage
-	url = https://github.com/3sixtyglobal/twin-entity-storage.git
+[submodule "entity-storage"]
+	path = entity-storage
+	url = https://github.com/3sixtyglobal/entity-storage.git
 	branch = next
-[submodule "twin-framework"]
-	path = twin-framework
-	url = https://github.com/3sixtyglobal/twin-framework.git
+[submodule "framework"]
+	path = framework
+	url = https://github.com/3sixtyglobal/framework.git
 	branch = next
-[submodule "twin-identity"]
-	path = twin-identity
-	url = https://github.com/3sixtyglobal/twin-identity.git
+[submodule "identity"]
+	path = identity
+	url = https://github.com/3sixtyglobal/identity.git
 	branch = next
-[submodule "twin-verifiable-storage"]
-	path = twin-verifiable-storage
-	url = https://github.com/3sixtyglobal/twin-verifiable-storage.git
+[submodule "verifiable-storage"]
+	path = verifiable-storage
+	url = https://github.com/3sixtyglobal/verifiable-storage.git
 	branch = next
-[submodule "twin-logging"]
-	path = twin-logging
-	url = https://github.com/3sixtyglobal/twin-logging.git
+[submodule "logging"]
+	path = logging
+	url = https://github.com/3sixtyglobal/logging.git
 	branch = next
-[submodule "twin-nft"]
-	path = twin-nft
-	url = https://github.com/3sixtyglobal/twin-nft.git
+[submodule "nft"]
+	path = nft
+	url = https://github.com/3sixtyglobal/nft.git
 	branch = next
-[submodule "twin-standards"]
-	path = twin-standards
-	url = https://github.com/3sixtyglobal/twin-standards.git
+[submodule "standards"]
+	path = standards
+	url = https://github.com/3sixtyglobal/standards.git
 	branch = next
-[submodule "twin-telemetry"]
-	path = twin-telemetry
-	url = https://github.com/3sixtyglobal/twin-telemetry.git
+[submodule "telemetry"]
+	path = telemetry
+	url = https://github.com/3sixtyglobal/telemetry.git
 	branch = next
-[submodule "twin-tools"]
-	path = twin-tools
-	url = https://github.com/3sixtyglobal/twin-tools.git
+[submodule "tools"]
+	path = tools
+	url = https://github.com/3sixtyglobal/tools.git
 	branch = next
-[submodule "twin-vault"]
-	path = twin-vault
-	url = https://github.com/3sixtyglobal/twin-vault.git
+[submodule "vault"]
+	path = vault
+	url = https://github.com/3sixtyglobal/vault.git
 	branch = next
-[submodule "twin-wallet"]
-	path = twin-wallet
-	url = https://github.com/3sixtyglobal/twin-wallet.git
+[submodule "wallet"]
+	path = wallet
+	url = https://github.com/3sixtyglobal/wallet.git
 	branch = next
-[submodule "twin-auditable-item-stream"]
-	path = twin-auditable-item-stream
-	url = https://github.com/3sixtyglobal/twin-auditable-item-stream.git
+[submodule "auditable-item-stream"]
+	path = auditable-item-stream
+	url = https://github.com/3sixtyglobal/auditable-item-stream.git
 	branch = next
-[submodule "twin-immutable-proof"]
-	path = twin-immutable-proof
-	url = https://github.com/3sixtyglobal/twin-immutable-proof.git
+[submodule "immutable-proof"]
+	path = immutable-proof
+	url = https://github.com/3sixtyglobal/immutable-proof.git
 	branch = next
-[submodule "twin-background-task"]
-	path = twin-background-task
-	url = https://github.com/3sixtyglobal/twin-background-task.git
+[submodule "background-task"]
+	path = background-task
+	url = https://github.com/3sixtyglobal/background-task.git
 	branch = next
-[submodule "twin-engine"]
-	path = twin-engine
-	url = https://github.com/3sixtyglobal/twin-engine.git
+[submodule "engine"]
+	path = engine
+	url = https://github.com/3sixtyglobal/engine.git
 	branch = next
-[submodule "twin-event-bus"]
-	path = twin-event-bus
-	url = https://github.com/3sixtyglobal/twin-event-bus.git
+[submodule "event-bus"]
+	path = event-bus
+	url = https://github.com/3sixtyglobal/event-bus.git
 	branch = next
-[submodule "twin-messaging"]
-	path = twin-messaging
-	url = https://github.com/3sixtyglobal/twin-messaging.git
+[submodule "messaging"]
+	path = messaging
+	url = https://github.com/3sixtyglobal/messaging.git
 	branch = next
-[submodule "twin-data-processing"]
-	path = twin-data-processing
-	url = https://github.com/3sixtyglobal/twin-data-processing.git
+[submodule "data-processing"]
+	path = data-processing
+	url = https://github.com/3sixtyglobal/data-processing.git
 	branch = next
-[submodule "twin-document-management"]
-	path = twin-document-management
-	url = https://github.com/3sixtyglobal/twin-document-management.git
+[submodule "document-management"]
+	path = document-management
+	url = https://github.com/3sixtyglobal/document-management.git
 	branch = next
-[submodule "twin-node"]
-	path = twin-node
-	url = https://github.com/3sixtyglobal/twin-node.git
+[submodule "node"]
+	path = node
+	url = https://github.com/3sixtyglobal/node.git
 	branch = next
-[submodule "twin-rights-management"]
-	path = twin-rights-management
-	url = https://github.com/3sixtyglobal/twin-rights-management.git
+[submodule "rights-management"]
+	path = rights-management
+	url = https://github.com/3sixtyglobal/rights-management.git
 	branch = next
-[submodule "twin-federated-catalogue"]
-	path = twin-federated-catalogue
-	url = https://github.com/3sixtyglobal/twin-federated-catalogue.git
+[submodule "federated-catalogue"]
+	path = federated-catalogue
+	url = https://github.com/3sixtyglobal/federated-catalogue.git
 	branch = next
-[submodule "twin-synchronised-storage"]
-	path = twin-synchronised-storage
-	url = https://github.com/3sixtyglobal/twin-synchronised-storage.git
+[submodule "synchronised-storage"]
+	path = synchronised-storage
+	url = https://github.com/3sixtyglobal/synchronised-storage.git
 	branch = next
-[submodule "twin-trust"]
-	path = twin-trust
-	url = https://github.com/3sixtyglobal/twin-trust.git
+[submodule "trust"]
+	path = trust
+	url = https://github.com/3sixtyglobal/trust.git
 	branch = next
-[submodule "twin-dataspace"]
-	path = twin-dataspace
-	url = https://github.com/3sixtyglobal/twin-dataspace.git
+[submodule "dataspace"]
+	path = dataspace
+	url = https://github.com/3sixtyglobal/dataspace.git
 	branch = next
-[submodule "twin-notarization"]
-	path = twin-notarization
-	url = https://github.com/3sixtyglobal/twin-notarization.git
+[submodule "notarization"]
+	path = notarization
+	url = https://github.com/3sixtyglobal/notarization.git
 	branch = next
-[submodule "twin-hierarchies"]
-	path = twin-hierarchies
-	url = https://github.com/3sixtyglobal/twin-hierarchies.git
+[submodule "hierarchies"]
+	path = hierarchies
+	url = https://github.com/3sixtyglobal/hierarchies.git
 	branch = next
-[submodule "twin-automation"]
-	path = twin-automation
-	url = https://github.com/3sixtyglobal/twin-automation.git
+[submodule "automation"]
+	path = automation
+	url = https://github.com/3sixtyglobal/automation.git
 	branch = next
-[submodule "twin-tracing"]
-	path = twin-tracing
-	url = https://github.com/3sixtyglobal/twin-tracing.git
+[submodule "tracing"]
+	path = tracing
+	url = https://github.com/3sixtyglobal/tracing.git
+	branch = next
+[submodule "api-auth"]
+	path = api-auth
+	url = https://github.com/3sixtyglobal/api-auth.git
+	branch = next
+[submodule "authorization"]
+	path = authorization
+	url = https://github.com/3sixtyglobal/authorization.git
 	branch = next
