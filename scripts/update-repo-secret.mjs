@@ -1,7 +1,7 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 /**
- * Updates a GitHub Actions secret across all twin repos listed in the workspace.
+ * Updates a GitHub Actions secret across all repos listed in the workspace.
  * Requires the gh CLI to be authenticated (gh auth login).
  */
 import { readFileSync } from 'node:fs';
@@ -12,7 +12,7 @@ const workspacePackage = JSON.parse(
 );
 
 const ORG = '3sixtyglobal';
-const SUBMODULES = ['twin-workspace', ...workspacePackage.submodules];
+const SUBMODULES = ['workspace-core', ...workspacePackage.submodules];
 
 /**
  * Set a secret on a single repo using the gh CLI.
@@ -26,9 +26,13 @@ function setSecret(repo, secretName, secretValue) {
 		const fullRepo = `${ORG}/${repo}`;
 		process.stdout.write(`${fullRepo}: setting ${secretName}...\n`);
 
-		const sp = spawn('gh', ['secret', 'set', secretName, '--body', secretValue, '--repo', fullRepo], {
-			stdio: ['ignore', 'inherit', 'pipe']
-		});
+		const sp = spawn(
+			'gh',
+			['secret', 'set', secretName, '--body', secretValue, '--repo', fullRepo],
+			{
+				stdio: ['ignore', 'inherit', 'pipe']
+			}
+		);
 
 		let stderr = '';
 		sp.stderr.on('data', chunk => {
@@ -74,4 +78,4 @@ async function setSecretAllRepos(secretName, secretValue) {
 
 const newValue = ``;
 
-setSecretAllRepos('TWIN_TEST_ENV_VARS', newValue);
+setSecretAllRepos('ORG_TEST_ENV_VARS', newValue);

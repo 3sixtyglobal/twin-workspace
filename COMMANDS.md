@@ -9,17 +9,17 @@ By default, commands run across all submodules. You can also:
 - Start from a specific submodule by appending its name.
 - Run against a single submodule by appending its name followed by `single`.
 
-| Command                           | All submodules                       | From submodule                                   | Single submodule                                        |
-| --------------------------------- | ------------------------------------ | ------------------------------------------------ | ------------------------------------------------------- |
-| [Install](#install)               | `pnpm run submodule:install`         | `pnpm run submodule:install twin-engine`         | `pnpm run submodule:install twin-engine single`         |
-| [Format](#format)                 | `pnpm run submodule:format`          | `pnpm run submodule:format twin-engine`          | `pnpm run submodule:format twin-engine single`          |
-| [Lint](#lint)                     | `pnpm run submodule:lint`            | `pnpm run submodule:lint twin-engine`            | `pnpm run submodule:lint twin-engine single`            |
-| [Dist](#dist)                     | `pnpm run submodule:dist`            | `pnpm run submodule:dist twin-engine`            | `pnpm run submodule:dist twin-engine single`            |
-| [Dist (no test)](#dist)           | `pnpm run submodule:dist-no-test`    | `pnpm run submodule:dist-no-test twin-engine`    | `pnpm run submodule:dist-no-test twin-engine single`    |
-| [Docs](#docs)                     | `pnpm run submodule:docs`            | `pnpm run submodule:docs twin-engine`            | `pnpm run submodule:docs twin-engine single`            |
-| [Quality](#quality)               | `pnpm run submodule:quality`         | `pnpm run submodule:quality twin-engine`         | `pnpm run submodule:quality twin-engine single`         |
-| [Quality (no test)](#quality)     | `pnpm run submodule:quality-no-test` | `pnpm run submodule:quality-no-test twin-engine` | `pnpm run submodule:quality-no-test twin-engine single` |
-| [Package update](#package-update) | `pnpm run submodule:package-update`  | `pnpm run submodule:package-update twin-engine`  | `pnpm run submodule:package-update twin-engine single`  |
+| Command                           | All submodules                       | From submodule                              | Single submodule                                   |
+| --------------------------------- | ------------------------------------ | ------------------------------------------- | -------------------------------------------------- |
+| [Install](#install)               | `pnpm run submodule:install`         | `pnpm run submodule:install engine`         | `pnpm run submodule:install engine single`         |
+| [Format](#format)                 | `pnpm run submodule:format`          | `pnpm run submodule:format engine`          | `pnpm run submodule:format engine single`          |
+| [Lint](#lint)                     | `pnpm run submodule:lint`            | `pnpm run submodule:lint engine`            | `pnpm run submodule:lint engine single`            |
+| [Dist](#dist)                     | `pnpm run submodule:dist`            | `pnpm run submodule:dist engine`            | `pnpm run submodule:dist engine single`            |
+| [Dist (no test)](#dist)           | `pnpm run submodule:dist-no-test`    | `pnpm run submodule:dist-no-test engine`    | `pnpm run submodule:dist-no-test engine single`    |
+| [Docs](#docs)                     | `pnpm run submodule:docs`            | `pnpm run submodule:docs engine`            | `pnpm run submodule:docs engine single`            |
+| [Quality](#quality)               | `pnpm run submodule:quality`         | `pnpm run submodule:quality engine`         | `pnpm run submodule:quality engine single`         |
+| [Quality (no test)](#quality)     | `pnpm run submodule:quality-no-test` | `pnpm run submodule:quality-no-test engine` | `pnpm run submodule:quality-no-test engine single` |
+| [Package update](#package-update) | `pnpm run submodule:package-update`  | `pnpm run submodule:package-update engine`  | `pnpm run submodule:package-update engine single`  |
 
 ### Operational notes
 
@@ -37,13 +37,13 @@ pnpm run submodule:format
 pnpm run submodule:dist-no-test
 
 # Build from a known failing point onward
-pnpm run submodule:dist-no-test twin-engine
+pnpm run submodule:dist-no-test engine
 
 # Run one module only
-pnpm run submodule:dist-no-test twin-engine single
+pnpm run submodule:dist-no-test engine single
 
 # Update the dependencies of one module
-pnpm run submodule:package-update twin-engine single
+pnpm run submodule:package-update engine single
 ```
 
 ### Install
@@ -56,16 +56,16 @@ pnpm run submodule:install
 
 If you need to start the `install` process from a specific submodule just add that module name to the end of the command.
 
-e.g. To start again from the `twin-engine` submodule.
+e.g. To start again from the `engine` submodule.
 
 ```shell
-pnpm run submodule:install twin-engine
+pnpm run submodule:install engine
 ```
 
 To run install against a single submodule use:
 
 ```shell
-pnpm run submodule:install twin-engine single
+pnpm run submodule:install engine single
 ```
 
 ### Format
@@ -79,13 +79,13 @@ pnpm run submodule:format
 To start formatting from a specific submodule use:
 
 ```shell
-pnpm run submodule:format twin-engine
+pnpm run submodule:format engine
 ```
 
 To run formatting against a single submodule use:
 
 ```shell
-pnpm run submodule:format twin-engine single
+pnpm run submodule:format engine single
 ```
 
 ### Lint
@@ -99,13 +99,13 @@ pnpm run submodule:lint
 To start linting from a specific submodule use:
 
 ```shell
-pnpm run submodule:lint twin-engine
+pnpm run submodule:lint engine
 ```
 
 To run linting against a single submodule use:
 
 ```shell
-pnpm run submodule:lint twin-engine single
+pnpm run submodule:lint engine single
 ```
 
 ### Dist
@@ -126,22 +126,22 @@ pnpm run submodule:dist-no-test
 
 If you need to start the `dist` or `dist-no-test` process from a specific submodule just add that module name to the end of the command.
 
-e.g. To start again from the `twin-engine` submodule.
+e.g. To start again from the `engine` submodule.
 
 ```shell
-pnpm run submodule:dist twin-engine
+pnpm run submodule:dist engine
 ```
 
 To run dist against a single submodule use:
 
 ```shell
-pnpm run submodule:dist twin-engine single
+pnpm run submodule:dist engine single
 ```
 
 To run dist-no-test against a single submodule use:
 
 ```shell
-pnpm run submodule:dist-no-test twin-engine single
+pnpm run submodule:dist-no-test engine single
 ```
 
 ### Docs
@@ -155,13 +155,13 @@ pnpm run submodule:docs
 To start docs generation from a specific submodule use:
 
 ```shell
-pnpm run submodule:docs twin-engine
+pnpm run submodule:docs engine
 ```
 
 To run docs generation against a single submodule use:
 
 ```shell
-pnpm run submodule:docs twin-engine single
+pnpm run submodule:docs engine single
 ```
 
 ### Quality
@@ -175,13 +175,13 @@ pnpm run submodule:quality
 To start the quality pass from a specific submodule use:
 
 ```shell
-pnpm run submodule:quality twin-engine
+pnpm run submodule:quality engine
 ```
 
 To run the quality pass against a single submodule use:
 
 ```shell
-pnpm run submodule:quality twin-engine single
+pnpm run submodule:quality engine single
 ```
 
 This is the same gate the repositories run in CI, so it is the broadest check available. The tests it runs have the same docker and environment requirements as [dist](#dist).
@@ -195,7 +195,7 @@ pnpm run submodule:quality-no-test
 It takes the same module name and `single` arguments as the other commands:
 
 ```shell
-pnpm run submodule:quality-no-test twin-engine single
+pnpm run submodule:quality-no-test engine single
 ```
 
 ### Package update
@@ -209,16 +209,16 @@ pnpm run submodule:package-update
 To start the updates from a specific submodule use:
 
 ```shell
-pnpm run submodule:package-update twin-engine
+pnpm run submodule:package-update engine
 ```
 
 To run the updates against a single submodule use:
 
 ```shell
-pnpm run submodule:package-update twin-engine single
+pnpm run submodule:package-update engine single
 ```
 
-This runs each submodule's own `package:update` script, which walks you through the available updates and then refreshes the `@twin.org` packages to the latest builds of their release tag. The packages a repository deliberately holds back are controlled by that repository through the `update.ignoreDeps` section of its `pnpm-workspace.yaml`.
+This runs each submodule's own `package:update` script, which walks you through the available updates and then refreshes the `@3sixty` packages to the latest builds of their release tag. The packages a repository deliberately holds back are controlled by that repository through the `update.ignoreDeps` section of its `pnpm-workspace.yaml`.
 
 This is useful because it lets you keep known-sensitive dependencies pinned while still updating everything else. In a multi-repo workspace, that helps you:
 

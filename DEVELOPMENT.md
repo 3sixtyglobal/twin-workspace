@@ -2,7 +2,7 @@
 
 ## Development model
 
-This workspace is an orchestration repository for TWIN submodules. It keeps the repositories together and provides shared scripts to run install, format, lint, and build commands across them.
+This workspace is an orchestration repository for submodules. It keeps the repositories together and provides shared scripts to run install, format, lint, and build commands across them.
 
 For day-to-day implementation work, open the specific submodule repository in VS Code and run that repository's package scripts directly.
 
@@ -20,7 +20,7 @@ Each submodule follows the setup, branch, commit and release conventions describ
 1. Clone the workspace with submodules:
 
 ```shell
-git clone --recursive https://github.com/3sixtyglobal/twin-workspace.git
+git clone --recursive https://github.com/3sixtyglobal/workspace-core.git
 ```
 
 1. Keep submodules current when switching context:

@@ -52,7 +52,7 @@ The **Align Branches** workflow is run manually to bring the workspace submodule
 1. Checks out `next`, runs `pnpm run submodule:align-next` to move every submodule to the head of its `next` branch, then commits and pushes `chore: update next submodules`.
 1. Checks out `main`, applies the diff from `main` to `next`, runs `pnpm run submodule:align-main` to move every submodule to the head of its `main` branch, then commits and pushes `chore: update main submodules`.
 
-Commits are GPG signed using the bot identity from the `TWIN_GPG_NAME` and `TWIN_GPG_EMAIL` secrets.
+Commits are GPG signed using the bot identity from the `ORG_GPG_NAME` and `ORG_GPG_EMAIL` secrets.
 
 ### Publish Project Audit
 
@@ -60,13 +60,13 @@ The **Publish Project Audit** workflow deploys the contents of `docs/project-aud
 
 ### Project Add Issue
 
-The **Project Add Issue** workflow adds each newly opened issue to the TWIN organisation project and labels it `needs-triage`.
+The **Project Add Issue** workflow adds each newly opened issue to the organisation project and labels it `needs-triage`.
 
 ## How submodules notify the workspace
 
 The `Release Next` and `Release Production` workflows in each submodule repository contain a `notify-workspace` job that runs once the packages and GitHub releases have been published.
 
-That job dispatches a repository event to `3sixtyglobal/twin-workspace` using `gh api`:
+That job dispatches a repository event to `3sixtyglobal/workspace-core` using `gh api`:
 
 - `event_type`: `submodule-published`
 - `client_payload`: includes `submodule`, `branch` (`next` or `main`) and `sha`

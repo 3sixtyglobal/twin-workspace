@@ -10,11 +10,11 @@ permissions:
 
 env:
   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_AUDIT }}
-  VERCEL_ORG_ID: ${{ secrets.TWIN_VERCEL_ORG_ID }}
+  VERCEL_ORG_ID: ${{ secrets.ORG_VERCEL_ORG_ID }}
 
 jobs:
   deploy:
-    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"twin","labels":"self-hosted"}') || 'ubuntu-latest' }}
+    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"3sixty","labels":"self-hosted"}') || 'ubuntu-latest' }}
 
     steps:
       # Clone the repository to the runner
@@ -39,8 +39,8 @@ jobs:
         run: |
           cd docs/project-audit
           DEPLOYMENT_URL=$(vercel deploy \
-          --token=${{ secrets.TWIN_VERCEL_TOKEN }} \
-          --scope=${{ secrets.TWIN_VERCEL_SCOPE }} \
+          --token=${{ secrets.ORG_VERCEL_TOKEN }} \
+          --scope=${{ secrets.ORG_VERCEL_SCOPE }} \
           --target='production' \
           --force)
           echo "deployment-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
@@ -51,5 +51,5 @@ jobs:
           vercel alias set \
           ${{ steps.deploy.outputs.deployment-url }} \
           ${{secrets.DOMAIN_AUDIT_PROD}} \
-          --token=${{ secrets.TWIN_VERCEL_TOKEN }} \
-          --scope=${{ secrets.TWIN_VERCEL_SCOPE }}
+          --token=${{ secrets.ORG_VERCEL_TOKEN }} \
+          --scope=${{ secrets.ORG_VERCEL_SCOPE }}

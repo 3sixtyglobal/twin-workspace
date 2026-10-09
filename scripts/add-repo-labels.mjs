@@ -4,7 +4,7 @@ import { readFileSync } from 'fs';
 const workspacePackage = JSON.parse(
 	readFileSync(new URL('../package.json', import.meta.url), 'utf8')
 );
-const SUBMODULES = ['twin-workspace', ...workspacePackage.submodules];
+const SUBMODULES = ['workspace-core', ...workspacePackage.submodules];
 
 const octokit = new Octokit({
 	auth: 'github_pat_...'
@@ -83,5 +83,4 @@ async function addLabelToRepo(repoName) {
 }
 
 // addLabelToAllRepos();
-addLabelToRepo("twin-tracing");
-
+addLabelToRepo('tracing');

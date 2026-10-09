@@ -1,3 +1,7 @@
 node_modules
-twin-*/
+/*/
+!/.github/
+!/.vscode/
+!/docs/
+!/scripts/
 pnpm-lock.yaml

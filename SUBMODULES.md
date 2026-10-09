@@ -2,7 +2,7 @@
 
 ## Overview
 
-The workspace repository uses Git submodules to reference each TWIN repository at a specific commit.
+The workspace repository uses Git submodules to reference each repository at a specific commit.
 
 Each submodule is registered in `.gitmodules` with `branch = next`, and is also listed in the root `package.json` `submodules` array. That array order defines execution order for workspace orchestration scripts and CI builds.
 
@@ -11,7 +11,7 @@ Each submodule is registered in `.gitmodules` with `branch = next`, and is also 
 Clone the workspace and all submodules:
 
 ```shell
-git clone --recursive https://github.com/3sixtyglobal/twin-workspace.git
+git clone --recursive https://github.com/3sixtyglobal/workspace-core.git
 ```
 
 If you cloned without `--recursive`, initialise and fetch submodules afterwards:
@@ -55,7 +55,7 @@ git submodule foreach "git status --short --branch"
 Add a new module:
 
 ```shell
-git submodule add -b next https://github.com/3sixtyglobal/twin-<name>.git
+git submodule add -b next https://github.com/3sixtyglobal/<name>.git
 ```
 
 After adding the repository, also add its name to the root `package.json` `submodules` array so workspace scripts and the **Workspace Submodule Build** workflow can process it.
@@ -65,19 +65,11 @@ After adding the repository, also add its name to the root `package.json` `submo
 Remove the submodule registration and its gitlink from the workspace:
 
 ```shell
-git submodule deinit -f twin-<name>
-git rm -f twin-<name>
+git submodule deinit -f <name>
+git rm -f <name>
 ```
 
 Then remove its name from the root `package.json` `submodules` array.
-
-## Repositories that are not submodules
-
-Some repositories, for example `twin-ui` and `twin-playground`, are cloned alongside the submodules but are not registered as submodules. They are listed in the root `.gitignore` so that `git add -A` does not record them as gitlinks without a `.gitmodules` entry, which would break `actions/checkout`. Clone them manually if you need them:
-
-```shell
-git clone https://github.com/3sixtyglobal/twin-ui.git
-```
 
 ## Ordering and execution
 

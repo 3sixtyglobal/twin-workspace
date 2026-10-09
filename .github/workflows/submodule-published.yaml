@@ -42,7 +42,7 @@ concurrency:
 jobs:
   read-submodules:
     # Read the submodule list from package.json once and expose it as a matrix.
-    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"twin","labels":"self-hosted"}') || 'ubuntu-latest' }}
+    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"3sixty","labels":"self-hosted"}') || 'ubuntu-latest' }}
 
     outputs:
       submodules: ${{ steps.get-submodules.outputs.submodules }}
@@ -70,7 +70,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
+          token: ${{ secrets.ORG_GHA_RELEASE_TOKEN }}
           ref: ${{ steps.set-branch.outputs.branch }}
           submodules: false
 
@@ -94,7 +94,7 @@ jobs:
   build-submodules:
     # Build each submodule independently with per-submodule cache keys.
     needs: read-submodules
-    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"twin","labels":"self-hosted"}') || 'ubuntu-latest' }}
+    runs-on: ${{ github.event.repository.private && fromJSON('{"group":"3sixty","labels":"self-hosted"}') || 'ubuntu-latest' }}
 
     timeout-minutes: 180
     strategy:
@@ -108,7 +108,7 @@ jobs:
       - name: Checkout selected repository
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.TWIN_GHA_RELEASE_TOKEN }}
+          token: ${{ secrets.ORG_GHA_RELEASE_TOKEN }}
           repository: 3sixtyglobal/${{ matrix.submodule }}
           ref: ${{ needs.read-submodules.outputs.branch }}
           path: ${{ matrix.submodule }}

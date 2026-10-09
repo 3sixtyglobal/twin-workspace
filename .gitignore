@@ -1,8 +1,4 @@
 # Repositories cloned into the workspace that are not registered submodules.
 # Without these, a `git add -A` records them as gitlinks with no .gitmodules
 # entry, which breaks actions/checkout with "No url found for submodule path".
-twin-ai/
-twin-api-auth/
-twin-authorization/
-twin-playground/
-twin-ui/
+ai/

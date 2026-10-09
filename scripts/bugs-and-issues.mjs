@@ -19,9 +19,9 @@ files.forEach(file => {
 
 		if (packageJson.name) {
 			packageJson.bugs = {
-				url: `git+https://github.com/3sixtyglobal/twin-${parts[0]}/issues`
+				url: `git+https://github.com/3sixtyglobal/${parts[0]}/issues`
 			};
-			packageJson.homepage = `https://twindev.org`;
+			packageJson.homepage = `https://3sixty.global`;
 			fs.writeFileSync(file, `${JSON.stringify(packageJson, undefined, '\t')}\n`);
 		}
 	} catch (error) {

@@ -1,6 +1,6 @@
-# Copilot Instructions for TWIN Workspace
+# Copilot Instructions for Workspace Core
 
-This repository is an orchestration workspace for TWIN submodules. It keeps many repositories together and provides root-level scripts for broad cross-repository tasks. It is not the primary place for day-to-day feature implementation inside packages or applications.
+This repository is an orchestration workspace for submodules. It keeps many repositories together and provides root-level scripts for broad cross-repository tasks. It is not the primary place for day-to-day feature implementation inside packages or applications.
 
 ## Core Operating Model
 
